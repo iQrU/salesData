@@ -8,8 +8,8 @@
       border-radius: 14px;
       border-width: 3px;
       border-color: #34346815;
-      min-width: 95px;
-      max-width: 140px;
+      min-width: 100px;
+      max-width: 135px;
     }
     select:focus {
       outline: none;
