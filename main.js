@@ -668,7 +668,7 @@ let dataDealer = {
   },
 
   clan: {
-    local: ["1302", "1303", "others"],
+    local: ["1302", "1303", "Sungnam", "others"],
     GH: [],
     NIP: ["NIP"],
     도매: ["도매"]
