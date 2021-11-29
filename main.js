@@ -57,7 +57,8 @@ xlr.onreadystatechange = function() {
       
       let dataBranch = dataDealer.summerizer("Clan", "Territory", "일자");
       let report = dataDealer.sumReport;  
-      for (let terr in coverData["local"]) {
+      for (let i = 0; i < dataDealer.clan.local.length; i++) {
+        let terr = dataDealer.clan.local[i];
         let terrBox = document.createElement("div");
         terrBox.setAttribute("class", "line");
         coverPage.appendChild(terrBox);
