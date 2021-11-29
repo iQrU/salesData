@@ -2,7 +2,6 @@
       margin: 0;
     }
     select {
-      display: block;
       font-family: Verdana, Geneva, Tahoma, sans-serif;
       font-size: medium;
       font-style: italic;
@@ -34,6 +33,7 @@
       padding: 4px 20px;
     }
     #header {
+      display: block;
       background-color: #34346850;
       font-family: Verdana, Geneva, Tahoma, sans-serif;
       color: #343468;
