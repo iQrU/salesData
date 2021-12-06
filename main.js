@@ -86,8 +86,14 @@ xlr.onreadystatechange = function() {
         } else {
           let area = dataDealer.terrOrg[terr];
           for (let i = 0; i < area.length; i++) {
-            content.innerHTML += `<li class="item" id=${area[i]}>${area[i]}: ${coverData["local"][terr][area[i]]? coverData["local"][terr][area[i]] : 0}
-              (${((coverData["local"][terr][area[i]] ? coverData["local"][terr][area[i]] : 0)/dataDealer.sumReport["local"].total * 100).toFixed(1)}%)</li>`;
+            content.innerHTML += `<li class="item" id="${area[i]}">${area[i]}: ${coverData["local"][terr][area[i]]? coverData["local"][terr][area[i]] : 0}
+              (${((coverData["local"][terr][area[i]]? coverData["local"][terr][area[i]] : 0)/dataDealer.sumReport["local"].total * 100).toFixed(1)}%)</li>`;
+          }
+          for (let i = 0; i < area.length; i++) {
+            let areaSales = document.getElementById(area[i]);
+            areaSales.onclick = function() {
+              reportAreaDaily(div, foot, terr, area[i], dataBranch, report);
+            };
           }
         }
 
@@ -660,7 +666,7 @@ let addrDealer = {
 let dataDealer = {
 
   terrOrg: {
-    1302: ["인천/부평구", "인천/서구", "인천/계양구", "인천/중구", "인천/강화군", "경기/부천시", "경기/고양시 덕양구"],
+    1302: ["인천/부평구", "인천/서구", "인천/계양구", "인천/중구", "인천/강화군", "경기/부천시"],
     1303: ["인천/남동구", "인천/미추홀구", "인천/연수구", "인천/동구", "경기/시흥시", "경기/안산시 상록구"],
     2302: ["서울/광진구", "서울/동대문구", "서울/성동구", "서울/중랑구", "경기/구리시", "경기/포천군", "경기/가평군"],
     2306: ["경기/성남시 분당구", "경기/성남시 중원구", "경기/성남시 수정구", "경기/용인시 수지구"],
