@@ -26,7 +26,7 @@ let terrOrg = {
 // 매출자료 가져오기!!
 
 let xlr = new XMLHttpRequest();
-xlr.open("GET", "/CKD Prevenar.xls");
+xlr.open("GET", "/CKD Prevenar Sales data(2021.12).xls");
 xlr.overrideMimeType("text/xml");
 xlr.onreadystatechange = function() {
   if (this.readyState == 4 && this.status == 200) {
@@ -76,7 +76,8 @@ xlr.onreadystatechange = function() {
           for (let area in coverData["local"][terr]) {
             content.innerHTML += `<li class="item" id="${area}">${area}: ${coverData["local"][terr][area]}
               (${(coverData["local"][terr][area]/dataDealer.sumReport["local"].total * 100).toFixed(1)}%)</li>`;
-
+          }
+          for (let area in coverData["local"][terr]) {
             let areaSales = document.getElementById(area);
             areaSales.addEventListener("click", function() {
               reportAreaDaily(div, foot, terr, area, dataBranch, report);
@@ -86,7 +87,7 @@ xlr.onreadystatechange = function() {
           let area = dataDealer.terrOrg[terr];
           for (let i = 0; i < area.length; i++) {
             content.innerHTML += `<li class="item" id=${area[i]}>${area[i]}: ${coverData["local"][terr][area[i]]? coverData["local"][terr][area[i]] : 0}
-              (${((coverData["local"][terr][area[i]]? coverData["local"][terr][area[i]] : 0)/dataDealer.sumReport["local"].total * 100).toFixed(1)}%)</li>`;
+              (${((coverData["local"][terr][area[i]] ? coverData["local"][terr][area[i]] : 0)/dataDealer.sumReport["local"].total * 100).toFixed(1)}%)</li>`;
           }
         }
 
@@ -100,7 +101,7 @@ xlr.onreadystatechange = function() {
             title.style.color = "darkolivegreen", title.style.fontStyle = "italic", title.style.fontWeight = "bold";
           }
           content.classList.toggle('active');
-          let menus = document.querySelectorAll('.far');
+          /*let menus = document.querySelectorAll('.far');
           menus.forEach(menu => {
             menu.onmouseover = function() {
               menu.style.color = "#34346895";
@@ -108,10 +109,10 @@ xlr.onreadystatechange = function() {
             menu.onmouseout = function() {
               menu.style.color = "#34346830";
             };
-          });
+          });*/
         }
       }
-      let menus = document.querySelectorAll('.fa-plus-square');
+      /*let menus = document.querySelectorAll('.fa-plus-square');
       menus.forEach(menu => {
         menu.onmouseover = function() {
           menu.style.color = "#34346895";
@@ -119,18 +120,18 @@ xlr.onreadystatechange = function() {
         menu.onmouseout = function() {
           menu.style.color = "#34346830";
         };
-      });  
+      });*/
     }
 
     let clip = document.querySelector('.fa-paperclip');
-    clip.onmouseover = function() {
+    /*clip.onmouseover = function() {
       if (foot.style.display == "block") {
         clip.style.color = "brown";
       }
     };
     clip.onmouseout = function() {
       clip.style.color = "darkolivegreen";
-    };
+    };*/
     clip.onclick = makeCover;
 
     let dataBranch = dataDealer.summerizer("Clan", "Territory", "일자");
@@ -374,7 +375,7 @@ function reportAreaDaily(container1, container2, territory, area, auxData, auxRe
   let showIt = document.createAttribute("style");
   showIt.value = "display: block";
   container2.setAttributeNode(showIt);
-  container2.innerHTML = `Territory 내 비중(${area}): ${total.toLocaleString()}/${auxReport["local"][territory].toLocaleString()}
+  container2.innerHTML = `Territory ${territory} 내 비중(${area}): ${total.toLocaleString()}/${auxReport["local"][territory].toLocaleString()}
     (${(total/auxReport["local"][territory] * 100).toFixed(1)}%)` + "<br>";
 }
 
@@ -659,9 +660,10 @@ let addrDealer = {
 let dataDealer = {
 
   terrOrg: {
-    1302: ["인천/부평구", "인천/서구", "인천/계양구", "인천/중구", "인천/강화군", "경기/부천시"],
-    1303: ["인천/남동구", "인천/미추홀구", "인천/연수구", "인천/동구", "경기/시흥시", "경기/김포시", "경기/안산시 상록구"],
-    Sungnam: ["경기/성남시 분당구", "경기/성남시 수정구", "경기/성남시 중원구"],
+    1302: ["인천/부평구", "인천/서구", "인천/계양구", "인천/중구", "인천/강화군", "경기/부천시", "경기/고양시 덕양구"],
+    1303: ["인천/남동구", "인천/미추홀구", "인천/연수구", "인천/동구", "경기/시흥시", "경기/안산시 상록구"],
+    2302: ["서울/광진구", "서울/동대문구", "서울/성동구", "서울/중랑구", "경기/구리시", "경기/포천군", "경기/가평군"],
+    2306: ["경기/성남시 분당구", "경기/성남시 중원구", "경기/성남시 수정구", "경기/용인시 수지구"],
     others: [],
     GH: [],
     NIP: [],
@@ -669,7 +671,7 @@ let dataDealer = {
   },
 
   clan: {
-    local: ["1302", "1303", "Sungnam", "others"],
+    local: ["1302", "1303", "2302", "2306", "others"],
     GH: [],
     NIP: ["NIP"],
     도매: ["도매"]
