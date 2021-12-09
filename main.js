@@ -25,7 +25,7 @@ let terrOrg = {
 
 window.addEventListener("load", function() {
   document.body.style.height = (document.documentElement.clientHeight + 5) + "px";
-  this.setTimeout(this.scrollTo, 0, 0, 1);
+  setTimeout(scrollTo, 0, 0, 1);
 }, false);
 
 // 매출자료 가져오기!!
