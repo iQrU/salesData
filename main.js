@@ -23,6 +23,11 @@ let terrOrg = {
   1303: ["인천/남동구", "인천/미추홀구", "인천/연수구", "인천/동구", "경기/시흥시", "경기/김포시", "경기/안산시 상록구"]
 };
 
+window.addEventListener("load", function() {
+  document.body.style.height = (document.documentElement.clientHeight + 5) + "px";
+  this.setTimeout(this.scrollTo, 0, 0, 1);
+}, false);
+
 // 매출자료 가져오기!!
 
 let xlr = new XMLHttpRequest();
