@@ -23,12 +23,6 @@ let terrOrg = {
   1303: ["인천/남동구", "인천/미추홀구", "인천/연수구", "인천/동구", "경기/시흥시", "경기/김포시", "경기/안산시 상록구"]
 };
 
-window.addEventListener("load", function() {
-  document.body.style.height = (document.documentElement.clientHeight + 5) + "px";
-  window.scrollTo(0, 1);
-  setTimeout(scrollTo, 0, 0, 1);
-}, false);
-
 // 매출자료 가져오기!!
 
 let xlr = new XMLHttpRequest();
@@ -558,6 +552,7 @@ let addrDealer = {
   제주: ["서귀포시", "제주시"],
   
   getTicket: function(address) {
+    //console.log(this.getDistrict(address), address);
     return this.getArea(address) + "/" + this.getDistrict(address);
   },
 
@@ -647,19 +642,24 @@ let addrDealer = {
             area == "인천" && regDist == "남구" ?
               district = "미추홀구" :
               (charNums == 2 && area != "제주") || (charNums == 4 && this.confirmDist(distList, regDist.substr(0,2))) ?
-                district = this.confirmDist(distList, regDist.substr(0,2)) :
+                district = this.confirmDist(distList, regDist.substr(0,2), address) :
                 district = distList[distList.indexOf(address.match(/[가-힣]{2,3}[시군구]{1}/)[0])];
 
     return district;
   },
-  confirmDist: function(distList, regDist) {
+  confirmDist: function(distList, regDist, address) {
     if (this.cities.indexOf(regDist.substr(0,2) + "시") == -1 && distList) {
       for (let i = 0; i < distList.length; i++) {
         if (distList[i].indexOf(regDist) == 0)
           return distList[i];
       }  
     } else {
-      return null;
+      let gu = regDist + "시 " + address.match(/[가-힣]{1,4}구/);
+      for (let i = 0; i <distList.length; i++) {
+        if (distList[i].indexOf(gu) == 0) {
+          return distList[i];
+        }
+      }
     }
   },
 
