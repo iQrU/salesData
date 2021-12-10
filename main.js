@@ -26,7 +26,8 @@ let terrOrg = {
 // 매출자료 가져오기!!
 
 let xlr = new XMLHttpRequest();
-xlr.open("GET", "/CKD Prevenar Sales data(2021.12).xls");
+let monthData = "/data/CKD Prevenar Sales data(2021.12).xls";
+xlr.open("GET", monthData);
 xlr.overrideMimeType("text/xml");
 xlr.onreadystatechange = function() {
   if (this.readyState == 4 && this.status == 200) {
@@ -36,6 +37,7 @@ xlr.onreadystatechange = function() {
     let div = document.getElementById("data");
     let foot = document.getElementById("foot");
     let selector = document.querySelectorAll('.criteria');
+    selector[0].length = 1;
     for (let i in dataDealer.clan) {
       for (let j = 0; j < dataDealer.clan[i].length; j++) {
         let opt = document.createElement("option");
@@ -118,6 +120,12 @@ xlr.onreadystatechange = function() {
           });*/
         }
       }
+      if (document.querySelectorAll('.bubble')) {
+        let menuBox = document.querySelectorAll('.bubble');
+        for (let i = 0; i < menuBox.length; i++) {
+          menuBox[i].style.display = "none";
+        }
+      }
       /*let menus = document.querySelectorAll('.fa-plus-square');
       menus.forEach(menu => {
         menu.onmouseover = function() {
@@ -129,7 +137,7 @@ xlr.onreadystatechange = function() {
       });*/
     }
 
-    let clip = document.querySelector('.fa-paperclip');
+    let clip = document.querySelector('.fa-redo');
     /*clip.onmouseover = function() {
       if (foot.style.display == "block") {
         clip.style.color = "brown";
@@ -267,6 +275,37 @@ xlr.onreadystatechange = function() {
   }
 };
 xlr.send();
+
+let calendar = document.querySelector('.fa-calendar-alt');
+calendar.onclick = function() {
+  let menuBox = document.createElement("div");
+  menuBox.setAttribute("class", "bubble");
+  document.body.appendChild(menuBox);
+  let thisMonth = new Date().getMonth();
+  let thisYear = new Date().getFullYear();
+  let monthArray = ["Jan.", "Feb.", "Mar.", "Apr.", "May", "Jun.", "Jul.", "Aug.", "Sep.", "Oct.", "Nov.", "Dec."];
+  for (let i = 0; i < (thisYear - 2021) * 12 + thisMonth + 1; i++) {
+    let menu = document.createElement("p");
+    let year = thisMonth - i < 0 ? thisYear - 1 : thisYear;
+    let month = (thisMonth + 12 - i) % 12;
+    menu.style.paddingLeft = "10px";
+    menu.innerHTML =  year + "/" + monthArray[month];
+    menuBox.appendChild(menu);
+    menu.onmouseover = function() {
+      menu.style.color = "blue", menu.style.fontStyle = "italic";
+    }
+    menu.onmouseout = function() {
+      menu.style.color = "black", menu.style.fontStyle = "normal";
+    }
+    menu.onclick = function() {
+      monthData = "/data/CKD Prevenar Sales data(" + year + "." + (month > 8 ? (month + 1) : "0" + (month + 1)) + ").xls"
+      xlr.open("GET", monthData);
+      xlr.overrideMimeType("text/xml");
+      xlr.send();
+      menuBox.style.display = "none";
+    }
+  }
+};
 
 function reportDaily(container1, container2, selector, auxData, auxReport) {
   container1.innerHTML = "", container2.innerHTML = "";
@@ -552,7 +591,7 @@ let addrDealer = {
   제주: ["서귀포시", "제주시"],
   
   getTicket: function(address) {
-    //console.log(this.getDistrict(address), address);
+    console.log(this.getDistrict(address), this.getArea(address), address);
     return this.getArea(address) + "/" + this.getDistrict(address);
   },
 
@@ -641,7 +680,7 @@ let addrDealer = {
             district = distList[distList.indexOf(regDist)] :
             area == "인천" && regDist == "남구" ?
               district = "미추홀구" :
-              (charNums == 2 && area != "제주") || (charNums == 4 && this.confirmDist(distList, regDist.substr(0,2))) ?
+              (charNums == 2 && area != "제주") || (charNums == 4 && this.confirmDist(distList, regDist.substr(0,2), address)) ?
                 district = this.confirmDist(distList, regDist.substr(0,2), address) :
                 district = distList[distList.indexOf(address.match(/[가-힣]{2,3}[시군구]{1}/)[0])];
 
@@ -653,13 +692,15 @@ let addrDealer = {
         if (distList[i].indexOf(regDist) == 0)
           return distList[i];
       }  
-    } else {
+    } else if (this.cities.indexOf(regDist + "시") != -1) {
       let gu = regDist + "시 " + address.match(/[가-힣]{1,4}구/);
       for (let i = 0; i <distList.length; i++) {
         if (distList[i].indexOf(gu) == 0) {
           return distList[i];
         }
       }
+    } else {
+      return distList[distList.indexOf(address.match(/[가-힣]{1,4}구/)[0])];
     }
   },
 

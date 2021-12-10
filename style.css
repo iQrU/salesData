@@ -1,11 +1,6 @@
 body {
   margin: 0;
-  min-height: 640px;
 }
-
-body[orient="portrait"] { min-height:640px; }
-body[orient="landscape"] { min-height:480px; }
-
 select {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   font-size: medium;
@@ -67,9 +62,56 @@ p {
 .far:hover {
   color: #34346895;
 }
-.fa-paperclip:hover {
+.fa-calendar-alt {
+  color: #343468;
+  font-size: 1.5em;
+}
+.fa-redo {
+  position: fixed;
+  font-size: 1.5em;
+  bottom: 15px;
+  right: 15px;
+}
+.fa-redo:hover {
   color: brown;
 }
+
+.bubble {
+  position: absolute;
+  top: 40px;
+  left: 5px;
+  width: 90px;
+  background: #FFFFFF;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  border: #7F7F7F solid 2px;
+}
+.bubble:after {
+  content: '';
+  position: absolute;
+  border-style: solid;
+  border-width: 0 8px 10px;
+  border-color: #FFFFFF transparent;
+  display: block;
+  width: 0;
+  z-index: 1;
+  top: -10px;
+  left: 12px;
+}
+.bubble:before {
+  content: '';
+  position: absolute;
+  border-style: solid;
+  border-width: 0 9px 11px;
+  border-color: #7F7F7F transparent;
+  display: block;
+  width: 0;
+  z-index: 0;
+  top: -13px;
+  left: 11px;
+}
+
 .unit {
   max-width: 250px;
   min-width: 230px;
@@ -86,7 +128,7 @@ p {
   border-top-right-radius: 10px;
 }
 .belly {
-  border: 3px solid rgb(52, 52, 104);
+  border: 2px solid rgb(52, 52, 104);
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
 }
