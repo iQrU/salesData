@@ -288,8 +288,8 @@ calendar.onclick = function() {
     let menu = document.createElement("p");
     let year = thisMonth - i < 0 ? thisYear - 1 : thisYear;
     let month = (thisMonth + 12 - i) % 12;
-    menu.style.paddingLeft = "10px";
-    menu.innerHTML =  year + "/" + monthArray[month];
+    menu.style.padding = "3px 10px";
+    menu.innerHTML = monthArray[month] + " " + year;
     menuBox.appendChild(menu);
     menu.onmouseover = function() {
       menu.style.color = "blue", menu.style.fontStyle = "italic";
@@ -572,6 +572,7 @@ let addrDealer = {
   wideArea: ["서울", "부산", "인천", "대구", "광주", "대전", "울산", "경기", "강원", "충북", "충남", "전북", "전남", "경북", "경남", "제주", "세종"],
   metro: ["서울", "부산", "인천", "대구", "광주", "대전", "울산"],
   cities: ["고양시", "성남시", "수원시", "안산시", "안양시", "용인시", "청주시", "천안시", "전주시", "포항시", "창원시"],
+  dong: {호계동: "안양시 동안구", 권선동: "수원시 권선구", 세류동: "수원시 권선구", 초지동: "안산시 단원구", 상현동: "용인시 수지구", 쌍용동: "천안시 서북구", 송천동: "전주시 덕진구", 성정동: "천안시 서북구", 동천동: "용인시 수지구"},
 
   서울: ["강남구", "강동구", "강북구", "강서구", "관악구", "광진구", "구로구", "금천구", "노원구", "도봉구", "동대문구", "동작구", "마포구", "서대문구", "서초구", "성동구", "성북구", "송파구", "양천구", "영등포구", "용산구", "은평구", "종로구", "중구", "중랑구"],
   부산: ["강서구", "금정구", "기장군", "남구", "동구", "동래구", "부산진구", "북구", "사상구", "사하구", "서구", "수영구", "연제구", "연수구", "영도구", "중구", "해운대구"],
@@ -589,9 +590,10 @@ let addrDealer = {
   경북: ["경산시", "경주시", "고령군", "구미시", "군위군", "김천시", "문경시", "봉화군", "상주시", "성주군", "안동시", "영덕군", "영양군", "영주시", "영천시", "예천군", "울릉군", "울진군", "의성군", "청도군", "청송군", "칠곡군", "포항시 남구", "포항시 북구"],
   경남: ["거제시", "거창군", "고성군", "김해시", "남해군", "남해시", "밀양시", "사천시", "산청군", "양산시", "의령군", "장승포시", "진주시", "진해시", "창녕군", "창원시 마산합포구", "창원시 마산회원구", "창원시 성산구", "창원시 의창구", "창원시 진해구", "통영시", "하동군", "함안군", "함양군", "합천군"],
   제주: ["서귀포시", "제주시"],
+  세종: [],
   
   getTicket: function(address) {
-    console.log(this.getDistrict(address), this.getArea(address), address);
+    console.log(this.getDistrict(address), address, this.confirmDong(address));
     return this.getArea(address) + "/" + this.getDistrict(address);
   },
 
@@ -670,6 +672,7 @@ let addrDealer = {
   
     let regDist = addrString.substr(startIdx, charNums);
     let distList = this[area];
+    //console.log(this.confirmDong(address), charNums, distList.indexOf(regDist), address);
     charNums == 3 || (charNums == 4 && regDist.charAt(2) != "군" && distList[distList.indexOf(regDist)]) ?
       district = distList[distList.indexOf(regDist)] :
       charNums > 4 ?
@@ -680,20 +683,21 @@ let addrDealer = {
             district = distList[distList.indexOf(regDist)] :
             area == "인천" && regDist == "남구" ?
               district = "미추홀구" :
-              (charNums == 2 && area != "제주") || (charNums == 4 && this.confirmDist(distList, regDist.substr(0,2), address)) ?
+              (charNums == 2 && area != "제주") || (charNums == 4 && this.confirmDist(distList, regDist, address)) ?
                 district = this.confirmDist(distList, regDist.substr(0,2), address) :
                 district = distList[distList.indexOf(address.match(/[가-힣]{2,3}[시군구]{1}/)[0])];
+                if (!district) district = this.confirmDong(address);
 
     return district;
   },
   confirmDist: function(distList, regDist, address) {
-    if (this.cities.indexOf(regDist.substr(0,2) + "시") == -1 && distList) {
+    if (this.cities.indexOf(regDist.substr(0,2) + "시") == -1 && distList && regDist.charAt(1) != "시") {
       for (let i = 0; i < distList.length; i++) {
-        if (distList[i].indexOf(regDist) == 0)
+        if (distList[i].indexOf(regDist.substr(0,2)) == 0)
           return distList[i];
       }  
-    } else if (this.cities.indexOf(regDist + "시") != -1) {
-      let gu = regDist + "시 " + address.match(/[가-힣]{1,4}구/);
+    } else if (this.cities.indexOf(regDist.substr(0,2) + "시") != -1) {
+      let gu = regDist.substr(0,2) + "시 " + address.match(/[가-힣]{1,4}구/);
       for (let i = 0; i <distList.length; i++) {
         if (distList[i].indexOf(gu) == 0) {
           return distList[i];
@@ -703,9 +707,12 @@ let addrDealer = {
       return distList[distList.indexOf(address.match(/[가-힣]{1,4}구/)[0])];
     }
   },
-
-  getDong: function(address) {
-
+  confirmDong: function(address) {
+    let area = this.getArea(address);
+    let dongName = address.match(/[가-힣]{2,3}동/);
+    if (this[area].indexOf(this.dong[dongName]) != -1) {
+      return this.dong[dongName];
+    };
   }
 
 }

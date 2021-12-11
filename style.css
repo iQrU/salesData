@@ -63,14 +63,19 @@ p {
   color: #34346895;
 }
 .fa-calendar-alt {
-  color: #343468;
+  color: darkolivegreen;
   font-size: 1.5em;
+}
+.fa-calendar-alt:hover {
+  color: brown;
 }
 .fa-redo {
   position: fixed;
   font-size: 1.5em;
   bottom: 15px;
   right: 15px;
+  color: burlywood;
+  filter: drop-shadow(3px 3px 3px);
 }
 .fa-redo:hover {
   color: brown;
@@ -80,7 +85,7 @@ p {
   position: absolute;
   top: 40px;
   left: 5px;
-  width: 90px;
+  width: 95px;
   background: #FFFFFF;
   -webkit-border-radius: 10px;
   -moz-border-radius: 10px;
