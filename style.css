@@ -121,7 +121,7 @@ p {
 .unit {
   max-width: 270px;
   min-width: 230px;
-  margin: 5px 5px 15px 5px;
+  margin: 5px 7px 15px 7px;
   flex-grow: 1;
 }
 .lid {
