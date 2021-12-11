@@ -51,6 +51,7 @@ p {
 #data {
   padding: 0px;
   display: flex;
+  justify-content: center;
   flex-wrap: wrap;
 }
 .line {
