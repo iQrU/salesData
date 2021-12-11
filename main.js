@@ -593,7 +593,7 @@ let addrDealer = {
   세종: [],
   
   getTicket: function(address) {
-    console.log(this.getDistrict(address), address, this.confirmDong(address));
+    //console.log(this.getDistrict(address), address, this.confirmDong(address));
     return this.getArea(address) + "/" + this.getDistrict(address);
   },
 
