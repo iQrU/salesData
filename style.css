@@ -33,6 +33,7 @@ p {
   padding: 4px 20px;
 }
 #header {
+  position: sticky;
   background-color: #34346850;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   color: #343468;
