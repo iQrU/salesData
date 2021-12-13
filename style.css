@@ -51,7 +51,6 @@ p {
 #data {
   padding: 0px;
   display: flex;
-  justify-content: space-evenly;
   flex-wrap: wrap;
 }
 .line {
@@ -121,7 +120,7 @@ p {
 .unit {
   max-width: 250px;
   min-width: 230px;
-  margin: 5px 0 10px 0;
+  margin: 5px 5px 10px 8px;
   flex-grow: 1;
 }
 .lid {
