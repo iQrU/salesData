@@ -23,6 +23,10 @@ let terrOrg = {
   1303: ["인천/남동구", "인천/미추홀구", "인천/연수구", "인천/동구", "경기/시흥시", "경기/김포시", "경기/안산시 상록구"]
 };
 
+let div = document.getElementById("data");
+let foot = document.getElementById("foot");
+let selector = document.querySelectorAll('.criteria');
+
 // 매출자료 가져오기!!
 
 let xlr = new XMLHttpRequest();
@@ -34,9 +38,6 @@ xlr.onreadystatechange = function() {
     let rawData = this.responseXML;
     let resultArray = dataDealer.processXML(rawData);
 
-    let div = document.getElementById("data");
-    let foot = document.getElementById("foot");
-    let selector = document.querySelectorAll('.criteria');
     selector[0].length = 1;
     for (let i in dataDealer.clan) {
       for (let j = 0; j < dataDealer.clan[i].length; j++) {
@@ -277,36 +278,42 @@ xlr.onreadystatechange = function() {
 xlr.send();
 
 let calendar = document.querySelector('.fa-calendar-alt');
+let menuBox = document.createElement("div");
+menuBox.setAttribute("class", "bubble");
+document.body.appendChild(menuBox);
+let thisMonth = new Date().getMonth();
+let thisYear = new Date().getFullYear();
+let monthArray = ["Jan.", "Feb.", "Mar.", "Apr.", "May", "Jun.", "Jul.", "Aug.", "Sep.", "Oct.", "Nov.", "Dec."];
+for (let i = 0; i < (thisYear - 2021) * 12 + thisMonth + 5; i++) {
+  let menu = document.createElement("p");
+  let count = Math.floor((thisMonth - i) / 12);
+  let year = thisYear + count;
+  let month = (thisMonth + 12 - i) % 12;
+  menu.style.padding = "3px 10px";
+  menu.innerHTML = monthArray[month] + " " + year;
+  menuBox.appendChild(menu);
+  menu.onmouseover = function() {
+    menu.style.color = "blue", menu.style.fontStyle = "italic";
+  }
+  menu.onmouseout = function() {
+    menu.style.color = "black", menu.style.fontStyle = "normal";
+  }
+  menu.onclick = function() {
+    div.innerHTML = "";
+    monthData = "/data/CKD Prevenar Sales data(" + year + "." + (month > 8 ? (month + 1) : "0" + (month + 1)) + ").xls"
+    xlr.open("GET", monthData);
+    xlr.overrideMimeType("text/xml");
+    xlr.send();
+    menuBox.style.display = "none";
+  }
+}
+menuBox.style.display = "none";
+
 calendar.onclick = function() {
-  let menuBox = document.createElement("div");
-  menuBox.setAttribute("class", "bubble");
-  document.body.appendChild(menuBox);
-  let thisMonth = new Date().getMonth();
-  let thisYear = new Date().getFullYear();
-  let monthArray = ["Jan.", "Feb.", "Mar.", "Apr.", "May", "Jun.", "Jul.", "Aug.", "Sep.", "Oct.", "Nov.", "Dec."];
-  for (let i = 0; i < (thisYear - 2021) * 12 + thisMonth + 5; i++) {
-    let menu = document.createElement("p");
-    let year = thisMonth - i < -12 ?
-      thisYear - 2 :
-      thisMonth - i < 0 ?
-        thisYear - 1 : thisYear;
-    let month = (thisMonth + 12 - i) % 12;
-    menu.style.padding = "3px 10px";
-    menu.innerHTML = monthArray[month] + " " + year;
-    menuBox.appendChild(menu);
-    menu.onmouseover = function() {
-      menu.style.color = "blue", menu.style.fontStyle = "italic";
-    }
-    menu.onmouseout = function() {
-      menu.style.color = "black", menu.style.fontStyle = "normal";
-    }
-    menu.onclick = function() {
-      monthData = "/data/CKD Prevenar Sales data(" + year + "." + (month > 8 ? (month + 1) : "0" + (month + 1)) + ").xls"
-      xlr.open("GET", monthData);
-      xlr.overrideMimeType("text/xml");
-      xlr.send();
-      menuBox.style.display = "none";
-    }
+  if (menuBox.style.display == "none") {
+    menuBox.style.display = "block";
+  } else {
+    menuBox.style.display = "none";
   }
 };
 
