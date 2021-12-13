@@ -284,9 +284,12 @@ calendar.onclick = function() {
   let thisMonth = new Date().getMonth();
   let thisYear = new Date().getFullYear();
   let monthArray = ["Jan.", "Feb.", "Mar.", "Apr.", "May", "Jun.", "Jul.", "Aug.", "Sep.", "Oct.", "Nov.", "Dec."];
-  for (let i = 0; i < (thisYear - 2021) * 12 + thisMonth + 1; i++) {
+  for (let i = 0; i < (thisYear - 2021) * 12 + thisMonth + 5; i++) {
     let menu = document.createElement("p");
-    let year = thisMonth - i < 0 ? thisYear - 1 : thisYear;
+    let year = thisMonth - i < -12 ?
+      thisYear - 2 :
+      thisMonth - i < 0 ?
+        thisYear - 1 : thisYear;
     let month = (thisMonth + 12 - i) % 12;
     menu.style.padding = "3px 10px";
     menu.innerHTML = monthArray[month] + " " + year;
