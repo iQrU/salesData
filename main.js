@@ -299,7 +299,7 @@ for (let i = 0; i < (thisYear - 2021) * 12 + thisMonth + 5; i++) {
     menu.style.color = "black", menu.style.fontStyle = "normal";
   }
   menu.onclick = function() {
-    div.innerHTML = "";
+    div.innerHTML = "", foot.style.display = "none";
     monthData = "/data/CKD Prevenar Sales data(" + year + "." + (month > 8 ? (month + 1) : "0" + (month + 1)) + ").xls"
     xlr.open("GET", monthData);
     xlr.overrideMimeType("text/xml");
