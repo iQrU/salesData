@@ -51,7 +51,7 @@ xlr.onreadystatechange = function() {
     makeCover();
 
     function makeCover() {
-      selector[0].selectedIndex = 0, selector[1].selectedIndex = 0;
+      selector[0].selectedIndex = 0, selector[1].length = 1;
       div.innerHTML = "", foot.style.display = "none";
       let coverData = dataDealer.summerizer("Clan", "Territory", "지역");
       let coverPage = document.createElement("div");
