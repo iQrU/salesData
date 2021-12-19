@@ -288,7 +288,7 @@ for (let i = 0; i < (thisYear - 2020) * 12 + thisMonth + 2; i++) {
   let menu = document.createElement("p");
   let count = Math.floor((thisMonth - i) / 12);
   let year = thisYear + count;
-  let month = (thisMonth + 12 - i) % 12;
+  let month = (thisMonth + (thisYear - 2019) * 12 - i) % 12;
   menu.style.padding = "3px 10px";
   menu.innerHTML = monthArray[month] + " " + year;
   menuBox.appendChild(menu);
