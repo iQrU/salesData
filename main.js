@@ -284,7 +284,7 @@ document.body.appendChild(menuBox);
 let thisMonth = new Date().getMonth();
 let thisYear = new Date().getFullYear();
 let monthArray = ["Jan.", "Feb.", "Mar.", "Apr.", "May", "Jun.", "Jul.", "Aug.", "Sep.", "Oct.", "Nov.", "Dec."];
-for (let i = 0; i < (thisYear - 2021) * 12 + thisMonth + 5; i++) {
+for (let i = 0; i < (thisYear - 2020) * 12 + thisMonth + 2; i++) {
   let menu = document.createElement("p");
   let count = Math.floor((thisMonth - i) / 12);
   let year = thisYear + count;
