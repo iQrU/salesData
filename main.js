@@ -121,6 +121,7 @@ xlr.onreadystatechange = function() {
           });*/
         }
       }
+
       if (document.querySelectorAll('.bubble')) {
         let menuBox = document.querySelectorAll('.bubble');
         for (let i = 0; i < menuBox.length; i++) {
@@ -300,6 +301,9 @@ for (let i = 0; i < (thisYear - 2020) * 12 + thisMonth + 2; i++) {
   }
   menu.onclick = function() {
     div.innerHTML = "", foot.style.display = "none";
+    let ring = document.createElement("div");
+    ring.setAttribute("class", "ring");
+    div.appendChild(ring);
     monthData = "/data/CKD Prevenar Sales data(" + year + "." + (month > 8 ? (month + 1) : "0" + (month + 1)) + ").xls"
     xlr.open("GET", monthData);
     xlr.overrideMimeType("text/xml");
@@ -582,7 +586,7 @@ let addrDealer = {
   wideArea: ["서울", "부산", "인천", "대구", "광주", "대전", "울산", "경기", "강원", "충북", "충남", "전북", "전남", "경북", "경남", "제주", "세종"],
   metro: ["서울", "부산", "인천", "대구", "광주", "대전", "울산"],
   cities: ["고양시", "성남시", "수원시", "안산시", "안양시", "용인시", "청주시", "천안시", "전주시", "포항시", "창원시"],
-  dong: {호계동: "안양시 동안구", 권선동: "수원시 권선구", 세류동: "수원시 권선구", 초지동: "안산시 단원구", 상현동: "용인시 수지구", 쌍용동: "천안시 서북구", 송천동: "전주시 덕진구", 성정동: "천안시 서북구", 동천동: "용인시 수지구"},
+  dong: {호계동: "안양시 동안구", 권선동: "수원시 권선구", 세류동: "수원시 권선구", 초지동: "안산시 단원구", 상현동: "용인시 수지구", 쌍용동: "천안시 서북구", 송천동: "전주시 덕진구", 성정동: "천안시 서북구", 동천동: "용인시 수지구", 신부동: "천안시 동남구", 용암동: "청주시 상당구", 제동리: "창원시 의창구", 구월동: "남동구"},
 
   서울: ["강남구", "강동구", "강북구", "강서구", "관악구", "광진구", "구로구", "금천구", "노원구", "도봉구", "동대문구", "동작구", "마포구", "서대문구", "서초구", "성동구", "성북구", "송파구", "양천구", "영등포구", "용산구", "은평구", "종로구", "중구", "중랑구"],
   부산: ["강서구", "금정구", "기장군", "남구", "동구", "동래구", "부산진구", "북구", "사상구", "사하구", "서구", "수영구", "연제구", "연수구", "영도구", "중구", "해운대구"],
@@ -596,14 +600,14 @@ let addrDealer = {
   충북: ["괴산군", "단양군", "보은군", "영동군", "옥천군", "음성군", "제천시", "증평군", "진천군", "청주시 상당구", "청주시 서원구", "청주시 청원구", "청주시 흥덕구", "충주시"],
   충남: ["계룡시", "공주시", "금산군", "논산시", "당진군", "당진시", "보령시", "부여군", "서산시", "서천군", "아산시", "예산군", "천안시 동남구", "천안시 서북구", "청양군", "태안군", "홍성군"],
   전북: ["고창군", "군산시", "김제시", "남원시", "무주군", "부안군", "순창군", "완주군", "익산시", "임실군", "장수군", "전주시 덕진구", "전주시 완산구", "정읍시", "진안군"],
-  전남: ["강진군", "고흥군", "곡성군", "광양시", "구례군", "나주시", "담양군", "목포시", "무안군", "보성군", "순천군", "순천시", "신안군", "여수시", "영광군", "영암군", "완도군", "장성군", "장흥군", "진도군", "함평군", "해남군", "화순군"],
+  전남: ["강진군", "고흥군", "곡성군", "광양시", "구례군", "나주시", "담양군", "목포시", "무안군", "보성군", "순천시", "신안군", "여수시", "영광군", "영암군", "완도군", "장성군", "장흥군", "진도군", "함평군", "해남군", "화순군"],
   경북: ["경산시", "경주시", "고령군", "구미시", "군위군", "김천시", "문경시", "봉화군", "상주시", "성주군", "안동시", "영덕군", "영양군", "영주시", "영천시", "예천군", "울릉군", "울진군", "의성군", "청도군", "청송군", "칠곡군", "포항시 남구", "포항시 북구"],
   경남: ["거제시", "거창군", "고성군", "김해시", "남해군", "남해시", "밀양시", "사천시", "산청군", "양산시", "의령군", "장승포시", "진주시", "진해시", "창녕군", "창원시 마산합포구", "창원시 마산회원구", "창원시 성산구", "창원시 의창구", "창원시 진해구", "통영시", "하동군", "함안군", "함양군", "합천군"],
   제주: ["서귀포시", "제주시"],
   세종: [],
   
   getTicket: function(address) {
-    //console.log(this.getDistrict(address), address, this.confirmDong(address));
+    //console.log(this.getDistrict(address), address, this.confirmDong(address), this.getArea(address));
     return this.getArea(address) + "/" + this.getDistrict(address);
   },
 
@@ -705,7 +709,16 @@ let addrDealer = {
       for (let i = 0; i < distList.length; i++) {
         if (distList[i].indexOf(regDist.substr(0,2)) == 0)
           return distList[i];
-      }  
+      }
+      if (address.match(/[가-힣]{2}시/)) {
+        if (this.cities.indexOf(address.match(/[가-힣]{2}시/)[0]) != -1) {
+          return distList[distList.indexOf(address.match(/[가-힣]{2}시 [가-힣]{1,4}구/)[0])];
+        } else {
+          return distList[distList.indexOf(address.match(/[가-힣]{2,3}시/)[0])];
+        }
+      } else {
+        return distList[distList.indexOf(address.match(/[가-힣]{1,3}구/)[0])];
+      }
     } else if (this.cities.indexOf(regDist.substr(0,2) + "시") != -1) {
       let gu = regDist.substr(0,2) + "시 " + address.match(/[가-힣]{1,4}구/);
       for (let i = 0; i <distList.length; i++) {
@@ -719,7 +732,7 @@ let addrDealer = {
   },
   confirmDong: function(address) {
     let area = this.getArea(address);
-    let dongName = address.match(/[가-힣]{2,3}동/);
+    let dongName = address.match(/[가-힣]{2}[동리]/);
     if (this[area].indexOf(this.dong[dongName]) != -1) {
       return this.dong[dongName];
     };

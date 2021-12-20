@@ -33,7 +33,6 @@ p {
   padding: 4px 20px;
 }
 #header {
-  position: sticky;
   background-color: #34346850;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   color: #343468;
@@ -166,4 +165,21 @@ p {
 }
 .item:nth-child(2n-1) {
   background-color: beige;
+}
+
+.ring {
+  position: absolute;
+  top: 130px;
+  left: 50%;
+  margin-left: -25px;
+  width: 50px;
+  height: 50px;
+  border: 7px solid #f3f3f3;
+  border-top: 7px solid #3468db;
+  border-radius: 50%;
+  animation: spin 2s linear infinite;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
