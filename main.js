@@ -83,6 +83,11 @@ xlr.onreadystatechange = function() {
           for (let area in coverData["local"][terr]) {
             let areaSales = document.getElementById(area);
             areaSales.addEventListener("click", function() {
+              selector[0].value = terr;
+              let opt = document.createElement("option");
+              opt.innerHTML = area;
+              selector[1].appendChild(opt);
+              selector[1].value = area;
               reportAreaDaily(div, foot, terr, area, dataBranch, report);
             });
           }
@@ -95,6 +100,22 @@ xlr.onreadystatechange = function() {
           for (let i = 0; i < area.length; i++) {
             let areaSales = document.getElementById(area[i]);
             areaSales.onclick = function() {
+              selector[0].value = terr;
+              for (let j = 0; j < area.length; j++) {
+                let opt = document.createElement("option");
+                opt.setAttribute("value", area[j]);
+                opt.innerHTML = area[j];
+                selector[1].appendChild(opt);
+                selector[1].onchange = function() {
+                  let area = selector[1][selector[1].selectedIndex].value;
+                  if (selector[1].selectedIndex != 0) {
+                    reportAreaDaily(div, foot, terr, area, dataBranch, report);
+                  } else {
+                    reportDaily(div, foot, selector, dataBranch, report);
+                  }
+                };    
+              }
+              selector[1].value = area[i];
               reportAreaDaily(div, foot, terr, area[i], dataBranch, report);
             };
           }
@@ -401,34 +422,37 @@ function reportAreaDaily(container1, container2, territory, area, auxData, auxRe
   container1.innerHTML = "", container2.innerHTML = "";
   let dataTree = dataDealer.summerizer("Territory", "일자", "지역", "거래처명");
   let myData = dataTree[territory];
+  console.log(myData);
   let total = 0, day = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
   for (let date in myData) {
-    let sum = 0;
-    let unit = document.createElement("div");
-    unit.setAttribute("class", "unit");
-    container1.insertBefore(unit, container1.firstChild);
-    let lid = document.createElement("div");
-    lid.setAttribute("class", "lid");
-    unit.appendChild(lid);
-    let tempDate = new Date();
-    tempDate.setFullYear(date.substr(0,4) * 1, date.substr(5,2) * 1 - 1, date.substr(8,2) * 1);
-    lid.innerHTML = date + " " + day[tempDate.getDay()].substr(0,3) + ".";
-    let belly = document.createElement("div");
-    belly.setAttribute("class", "belly");
-    unit.appendChild(belly);
-    let content = document.createElement("div");
-    content.style.padding = "5px 15px 10px 15px";
-    belly.appendChild(content);
-    for (let clinic in myData[date][area]) {
-      content.innerHTML += ` ${clinic}: ${myData[date][area][clinic].toLocaleString()}` + "<br>";
-      sum += myData[date][area][clinic];
+    if (myData[date][area]) {
+      let sum = 0;
+      let unit = document.createElement("div");
+      unit.setAttribute("class", "unit");
+      container1.insertBefore(unit, container1.firstChild);
+      let lid = document.createElement("div");
+      lid.setAttribute("class", "lid");
+      unit.appendChild(lid);
+      let tempDate = new Date();
+      tempDate.setFullYear(date.substr(0,4) * 1, date.substr(5,2) * 1 - 1, date.substr(8,2) * 1);
+      lid.innerHTML = date + " " + day[tempDate.getDay()].substr(0,3) + ".";
+      let belly = document.createElement("div");
+      belly.setAttribute("class", "belly");
+      unit.appendChild(belly);
+      let content = document.createElement("div");
+      content.style.padding = "5px 15px 10px 15px";
+      belly.appendChild(content);
+      for (let clinic in myData[date][area]) {
+        content.innerHTML += ` ${clinic}: ${myData[date][area][clinic].toLocaleString()}` + "<br>";
+        sum += myData[date][area][clinic];
+      }
+      let bottom = document.createElement("div");
+      bottom.setAttribute("class", "bottom");
+      belly.appendChild(bottom);
+      bottom.innerHTML += `total: ${sum.toLocaleString()}/${auxData["local"][territory][date].toLocaleString()}
+        (${(sum/auxData["local"][territory][date] * 100).toFixed(1)}%)` + "<br>";
+      total += sum;  
     }
-    let bottom = document.createElement("div");
-    bottom.setAttribute("class", "bottom");
-    belly.appendChild(bottom);
-    bottom.innerHTML += `total: ${sum.toLocaleString()}/${auxData["local"][territory][date].toLocaleString()}
-      (${(sum/auxData["local"][territory][date] * 100).toFixed(1)}%)` + "<br>";
-    total += sum;
   }
 
   let showIt = document.createAttribute("style");
