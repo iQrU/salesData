@@ -771,14 +771,14 @@ let dataDealer = {
     2302: ["서울/광진구", "서울/동대문구", "서울/성동구", "서울/중랑구", "경기/구리시", "경기/포천군", "경기/가평군"],
     2306: ["경기/성남시 분당구", "경기/성남시 중원구", "경기/성남시 수정구", "경기/용인시 수지구"],
     others: [],
-    GH: [],
+    GH: ["(학)가톨릭대학교서울성모병원", "(학)카톨릭대학교여의도성모병원", "인천성모병원 (학)가톨릭대학교", "(학)가톨릭학원의정부성모병원", "(학)가톨릭대학교부천성모병원", "성빈센트병원(학)가톨릭학원가톨릭대학교", "카톨릭대학교은평성모병원"],
     NIP: [],
     도매: []
   },
 
   clan: {
     local: ["1303", "2302", "2306", "others"],
-    GH: [],
+    GH: ["GH"],
     NIP: ["NIP"],
     도매: ["도매"]
   },
@@ -820,14 +820,15 @@ let dataDealer = {
     let accountIdx = this.header.indexOf("거래처명");
     let refIdx = this.header.indexOf("구분");
     let ticketIdx = this.header.indexOf("지역");
+    if (record[accountIdx].indexOf("보건") != -1 && record[accountIdx].indexOf("의원") == -1) {
+      return "NIP";
+    } else if (record[refIdx].indexOf("도매") != -1) {
+      return "도매";
+    } else if (this.terrOrg.GH.indexOf(record[accountIdx]) != -1) {
+      return "GH";
+    }
     for (let num in this.terrOrg) {
-      if (record[accountIdx].indexOf("보건") != -1 && record[accountIdx].indexOf("의원") == -1) {
-        return "NIP";
-      } else if (record[refIdx].indexOf("도매") != -1) {
-        return "도매";
-      } else if (this.terrOrg[num].indexOf(record[ticketIdx]) != -1) {
-        return num;
-      }
+      if (this.terrOrg[num].indexOf(record[ticketIdx]) != -1) return num;
     }
     return "others";  
   },
