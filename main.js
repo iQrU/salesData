@@ -178,11 +178,13 @@ xlr.onreadystatechange = function() {
       let idx = selector[0].selectedIndex;
       let territory = selector[0][idx].value;
       selector[1].length = 1;
-      for (let i = 0; i < dataDealer.terrOrg[territory].length; i++) {
-        let opt = document.createElement("option");
-        opt.setAttribute("value", dataDealer.terrOrg[territory][i]);
-        opt.innerHTML = dataDealer.terrOrg[territory][i];
-        selector[1].appendChild(opt);
+      if (territory != "GH") {
+        for (let i = 0; i < dataDealer.terrOrg[territory].length; i++) {
+          let opt = document.createElement("option");
+          opt.setAttribute("value", dataDealer.terrOrg[territory][i]);
+          opt.innerHTML = dataDealer.terrOrg[territory][i];
+          selector[1].appendChild(opt);
+        }
       }
 
       reportDaily(div, foot, selector, dataBranch, report);
@@ -410,6 +412,9 @@ function reportDaily(container1, container2, selector, auxData, auxReport) {
   if (selector[1].selectedIndex) {
     container2.innerHTML = `Territory ${territory} 내 비중(${ticket}): ${total.toLocaleString()}/${auxReport["local"][territory].toLocaleString()}
       (${(total/auxReport["local"][territory] * 100).toFixed(1)}%)` + "<br>";
+  } else if (territory == "GH") {
+    container2.innerHTML = `${territory} 비중: ${total.toLocaleString()}/${(auxReport["local"].total + auxReport["GH"].total).toLocaleString()}
+      (${(total/(auxReport["local"].total + auxReport["GH"].total) * 100).toFixed(1)}%)` + "<br>";
   } else if (territory != "NIP" && territory != "도매") {
     container2.innerHTML = `Territory ${territory} 비중: ${total.toLocaleString()}/${auxReport["local"].total.toLocaleString()}
       (${(total/auxReport["local"].total * 100).toFixed(1)}%)` + "<br>";
