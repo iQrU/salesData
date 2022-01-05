@@ -69,18 +69,18 @@ xlr.onreadystatechange = function() {
         let title = document.createElement("div");
         terrBox.appendChild(title);
         title.innerHTML = `<span class="narrow" id=${terr}><i class="far fa-plus-square"></i></span>
-          ${terr}: ${dataDealer.sumReport["local"][terr].toLocaleString()}
-          (${(dataDealer.sumReport["local"][terr]/dataDealer.sumReport["local"].total * 100).toFixed(1)}%)<br>`;
+          ${terr}: ${report.local[terr].toLocaleString()}
+          (${(report.local[terr]/report.local.total * 100).toFixed(1)}%)<br>`;
 
         let content = document.createElement("div");
         content.setAttribute("class", "has");
         terrBox.appendChild(content);
         if (terr == "others") {
-          for (let area in coverData["local"][terr]) {
-            content.innerHTML += `<li class="item" id="${area}">${area}: ${coverData["local"][terr][area]}
-              (${(coverData["local"][terr][area]/dataDealer.sumReport["local"].total * 100).toFixed(1)}%)</li>`;
+          for (let area in coverData.local[terr]) {
+            content.innerHTML += `<li class="item" id="${area}">${area}: ${coverData.local[terr][area]}
+              (${(coverData.local[terr][area]/report.local.total * 100).toFixed(1)}%)</li>`;
           }
-          for (let area in coverData["local"][terr]) {
+          for (let area in coverData.local[terr]) {
             let areaSales = document.getElementById(area);
             areaSales.addEventListener("click", function() {
               selector[0].value = terr;
@@ -93,9 +93,33 @@ xlr.onreadystatechange = function() {
           }
         } else {
           let area = dataDealer.terrOrg[terr];
+          let canvas = document.createElement("canvas");
+          canvas.setAttribute("height", 220);
+          let context = canvas.getContext("2d");
+          let color = ["red", "purple", "blue", "yellow", "green", "orange", "yellowgreen"];
+          let startRad = -0.5 * Math.PI;
+          context.fillStyle = "darkolivegreen";
+          context.font = "1.6em Lucida Grande";
+          context.fillText("🍩 Territory 내 지역별 비중 🍉", 20, 30);
           for (let i = 0; i < area.length; i++) {
-            content.innerHTML += `<li class="item" id="${area[i]}">${area[i]}: ${coverData["local"][terr][area[i]]? coverData["local"][terr][area[i]] : 0}
-              (${((coverData["local"][terr][area[i]]? coverData["local"][terr][area[i]] : 0)/dataDealer.sumReport["local"].total * 100).toFixed(1)}%)</li>`;
+            let areaSales = coverData.local[terr][area[i]];
+            let portion = (areaSales? areaSales : 0) / report.local[terr];
+            let posiRad = startRad + (0.5 + portion) * Math.PI;
+            content.innerHTML += `<li class="item" id="${area[i]}">${area[i]}: ${areaSales? areaSales : 0}
+              (${((areaSales? areaSales : 0)/dataDealer.sumReport.local.total * 100).toFixed(1)}%)</li>`;
+            context.beginPath();
+            context.arc(125, 130, 65, startRad, startRad + portion * 2 * Math.PI, false);
+            context.lineTo(125, 130);
+            context.fillStyle = color[i];
+            context.fill();
+            context.fillRect(canvas.width - 68, (canvas.height + 50) / 2 - 23 * area.length / 2 + 23 * i, 7, 7);
+            context.fillStyle = "black";
+            context.font = "1.5em Lucida Grande";
+            context.fillText((portion * 100).toFixed(0) + "%", 113 + 80 * Math.sin(posiRad), 136 - 80 * Math.cos(posiRad));
+            context.font = "0.9em Lucida Grande";
+            context.fillText(area[i].substr(3), canvas.width - 58, (canvas.height + 63) / 2 - 23 * area.length / 2 + 23 * i);
+            context.closePath();
+            startRad += portion * 2 * Math.PI;
           }
           for (let i = 0; i < area.length; i++) {
             let areaSales = document.getElementById(area[i]);
@@ -119,6 +143,7 @@ xlr.onreadystatechange = function() {
               reportAreaDaily(div, foot, terr, area[i], dataBranch, report);
             };
           }
+          content.appendChild(canvas);
         }
 
         let anchor = document.getElementById(terr);
