@@ -94,9 +94,9 @@ xlr.onreadystatechange = function() {
         } else {
           let area = dataDealer.terrOrg[terr];
           let canvas = document.createElement("canvas");
-          canvas.setAttribute("height", 220);
+          canvas.height = 220, canvas.width = 300;
           let context = canvas.getContext("2d");
-          let color = ["red", "purple", "blue", "yellow", "green", "orange", "yellowgreen"];
+          let color = ["red", "purple", "blue", "green", "orange", "yellowgreen", "yellow"];
           let startRad = -0.5 * Math.PI;
           context.fillStyle = "darkolivegreen";
           context.font = "1.6em Lucida Grande";
@@ -112,12 +112,12 @@ xlr.onreadystatechange = function() {
             context.lineTo(125, 130);
             context.fillStyle = color[i];
             context.fill();
-            context.fillRect(canvas.width - 68, (canvas.height + 50) / 2 - 23 * area.length / 2 + 23 * i, 7, 7);
+            context.fillRect(canvas.width - 75, (canvas.height + 50) / 2 - 23 * area.length / 2 + 23 * i, 7, 7);
             context.fillStyle = "black";
-            context.font = "1.5em Lucida Grande";
+            context.font = "1.2em Lucida Grande";
             context.fillText((portion * 100).toFixed(0) + "%", 113 + 80 * Math.sin(posiRad), 136 - 80 * Math.cos(posiRad));
-            context.font = "0.9em Lucida Grande";
-            context.fillText(area[i].substr(3), canvas.width - 58, (canvas.height + 63) / 2 - 23 * area.length / 2 + 23 * i);
+            context.font = "1em Lucida Grande";
+            context.fillText(area[i].substr(3), canvas.width - 65, (canvas.height + 63) / 2 - 23 * area.length / 2 + 23 * i);
             context.closePath();
             startRad += portion * 2 * Math.PI;
           }
