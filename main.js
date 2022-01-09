@@ -95,6 +95,7 @@ xlr.onreadystatechange = function() {
           let area = dataDealer.terrOrg[terr];
           let canvas = document.createElement("canvas");
           canvas.height = 220, canvas.width = 300;
+          canvas.setAttribute("style", "{width: 300px; height: 220px;}");
           let context = canvas.getContext("2d");
           let color = ["red", "orange", "yellowgreen", "green", "skyblue", "blue", "purple"];
           let startRad = -0.5 * Math.PI;
@@ -113,9 +114,11 @@ xlr.onreadystatechange = function() {
             context.fillStyle = color[i];
             context.fill();
             context.fillRect(canvas.width - 75, (canvas.height + 50) / 2 - 23 * area.length / 2 + 23 * i, 7, 7);
-            context.fillStyle = "black";
-            context.font = "1.2em Lucida Grande";
-            context.fillText((portion * 100).toFixed(0) + "%", 113 + 80 * Math.sin(posiRad), 136 - 80 * Math.cos(posiRad));
+            if(portion > 0.01) {
+              context.fillStyle = "black";
+              context.font = "1.2em Lucida Grande";
+              context.fillText((portion * 100).toFixed(0) + "%", 116 + 80 * Math.sin(posiRad), 136 - 80 * Math.cos(posiRad));
+            }
             context.font = "1em Lucida Grande";
             context.fillText(area[i].substr(3), canvas.width - 65, (canvas.height + 63) / 2 - 23 * area.length / 2 + 23 * i);
             context.closePath();
