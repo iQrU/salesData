@@ -96,7 +96,7 @@ xlr.onreadystatechange = function() {
           let canvas = document.createElement("canvas");
           canvas.height = 220, canvas.width = 300;
           let context = canvas.getContext("2d");
-          let color = ["red", "purple", "blue", "green", "orange", "yellowgreen", "yellow"];
+          let color = ["red", "orange", "yellowgreen", "green", "skyblue", "blue", "purple"];
           let startRad = -0.5 * Math.PI;
           context.fillStyle = "darkolivegreen";
           context.font = "1.6em Lucida Grande";
