@@ -30,7 +30,7 @@ let selector = document.querySelectorAll('.criteria');
 // 매출자료 가져오기!!
 
 let xlr = new XMLHttpRequest();
-let monthData = "/data/CKD Prevenar Sales data(2022.02).xls";
+let monthData = "/data/CKD Prevenar Sales data(2022.03).xls";
 xlr.open("GET", monthData);
 xlr.overrideMimeType("text/xml");
 xlr.onreadystatechange = function() {
