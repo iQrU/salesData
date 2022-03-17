@@ -125,7 +125,7 @@ xlr.onreadystatechange = function() {
           chartArea.setAttribute("width", "340"), chartArea.setAttribute("height", "250");
 
           let title = document.createElementNS("http://www.w3.org/2000/svg", "text");
-          title.setAttribute("x", 15), title.setAttribute("y", 35);
+          title.setAttribute("x", 25), title.setAttribute("y", 35);
           title.innerHTML = "🍩 Territory 내 지역별 비중 🍉";
           chartArea.appendChild(title);
 
@@ -152,8 +152,8 @@ xlr.onreadystatechange = function() {
             }
 
             chartArea.innerHTML +=
-              `<circle cx="255" cy=${160 - 23 * area.length / 2 + 23 * i} r="4" fill=${color[i]}></circle>
-              <text x="265" y=${164 - 23 * area.length / 2 + 23 * i} font-size="10px">${area[i].substr(3)}</text>`;
+              `<circle cx="255" cy=${162 - 23 * area.length / 2 + 23 * i} r="4" fill=${color[i]}></circle>
+              <text x="265" y=${165 - 23 * area.length / 2 + 23 * i} font-size="10px">${area[i].substr(3)}</text>`;
           }
           content.appendChild(chartArea);
         }
