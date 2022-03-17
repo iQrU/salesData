@@ -143,11 +143,13 @@ xlr.onreadystatechange = function() {
             startX = endX, startY = endY;
             chartArea.appendChild(path);
 
-            let percent = document.createElementNS("http://www.w3.org/2000/svg", "text");
-            percent.setAttribute("x", 120 + 90 * Math.sin(posiRad)), percent.setAttribute("y", 155 - 90 * Math.cos(posiRad));
-            percent.setAttribute("font-size", `12px`);
-            percent.innerHTML = `${(areaShare * 100).toFixed(0)}%`;
-            chartArea.appendChild(percent);
+            if (areaShare > 0.01) {
+              let percent = document.createElementNS("http://www.w3.org/2000/svg", "text");
+              percent.setAttribute("x", 120 + 90 * Math.sin(posiRad)), percent.setAttribute("y", 155 - 90 * Math.cos(posiRad));
+              percent.setAttribute("font-size", `12px`);
+              percent.innerHTML = `${(areaShare * 100).toFixed(0)}%`;
+              chartArea.appendChild(percent);
+            }
 
             chartArea.innerHTML +=
               `<circle cx="255" cy=${160 - 23 * area.length / 2 + 23 * i} r="4" fill=${color[i]}></circle>
