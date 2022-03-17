@@ -144,7 +144,7 @@ xlr.onreadystatechange = function() {
             chartArea.appendChild(path);
 
             let percent = document.createElementNS("http://www.w3.org/2000/svg", "text");
-            percent.setAttribute("x", 118 + 90 * Math.sin(posiRad)), percent.setAttribute("y", 157 - 90 * Math.cos(posiRad));
+            percent.setAttribute("x", 118 + 90 * Math.sin(posiRad)), percent.setAttribute("y", 155 - 90 * Math.cos(posiRad));
             percent.setAttribute("font-size", `12px`);
             percent.innerHTML = `${(areaShare * 100).toFixed(0)}%`;
             chartArea.appendChild(percent);
