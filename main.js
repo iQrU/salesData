@@ -95,6 +95,10 @@ xlr.onreadystatechange = function() {
           let area = dataDealer.terrOrg[terr];
           let color = ["red", "orange", "yellowgreen", "green", "skyblue", "blue", "purple"];
           for (let i = 0; i < area.length; i++) {
+            content.innerHTML += `<li class="item" id="${area[i]}">${area[i]}: ${areaSales? areaSales : 0}
+              (${((areaSales? areaSales : 0)/dataDealer.sumReport.local.total * 100).toFixed(1)}%)</li>`;
+          }
+          for (let i = 0; i < area.length; i++) {
             let areaSales = document.getElementById(area[i]);
             areaSales.onclick = function() {
               selector[0].value = terr;
