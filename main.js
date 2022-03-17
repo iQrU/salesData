@@ -93,37 +93,7 @@ xlr.onreadystatechange = function() {
           }
         } else {
           let area = dataDealer.terrOrg[terr];
-          let canvas = document.createElement("canvas");
-          canvas.height = 220, canvas.width = 320;
-          canvas.setAttribute("style", "{width: 300px; height: 220px;}");
-          let context = canvas.getContext("2d");
           let color = ["red", "orange", "yellowgreen", "green", "skyblue", "blue", "purple"];
-          let startRad = -0.5 * Math.PI;
-          context.fillStyle = "darkolivegreen";
-          context.font = "1.6em Lucida Grande";
-          context.fillText("🍩 Territory 내 지역별 비중 🍉", 20, 30);
-          for (let i = 0; i < area.length; i++) {
-            let areaSales = coverData.local[terr][area[i]];
-            let portion = (areaSales? areaSales : 0) / report.local[terr];
-            let posiRad = startRad + (0.5 + portion) * Math.PI;
-            content.innerHTML += `<li class="item" id="${area[i]}">${area[i]}: ${areaSales? areaSales : 0}
-              (${((areaSales? areaSales : 0)/dataDealer.sumReport.local.total * 100).toFixed(1)}%)</li>`;
-            context.beginPath();
-            context.arc(125, 130, 65, startRad, startRad + portion * 2 * Math.PI, false);
-            context.lineTo(125, 130);
-            context.fillStyle = color[i];
-            context.fill();
-            context.fillRect(235, (canvas.height + 50) / 2 - 23 * area.length / 2 + 23 * i, 7, 7);
-            if(portion > 0.01) {
-              context.fillStyle = "black";
-              context.font = "1.2em Lucida Grande";
-              context.fillText((portion * 100).toFixed(0) + "%", 116 + 80 * Math.sin(posiRad), 136 - 80 * Math.cos(posiRad));
-            }
-            context.font = "1em Lucida Grande";
-            context.fillText(area[i].substr(3), 250, (canvas.height + 63) / 2 - 23 * area.length / 2 + 23 * i);
-            context.closePath();
-            startRad += portion * 2 * Math.PI;
-          }
           for (let i = 0; i < area.length; i++) {
             let areaSales = document.getElementById(area[i]);
             areaSales.onclick = function() {
@@ -146,7 +116,39 @@ xlr.onreadystatechange = function() {
               reportAreaDaily(div, foot, terr, area[i], dataBranch, report);
             };
           }
-          content.appendChild(canvas);
+          let chartArea = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+          chartArea.setAttribute("width", "340"), chartArea.setAttribute("height", "250");
+
+          let title = document.createElementNS("http://www.w3.org/2000/svg", "text");
+          title.setAttribute("x", 15), title.setAttribute("y", 35);
+          title.innerHTML = "🍩 Territory 내 지역별 비중 🍉";
+          chartArea.appendChild(title);
+
+          let startX = 130, startY = 75, endX, endY, portion = 0;
+          for (let i = 0; i < area.length; i++) {
+            let path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            let areaSales = coverData.local[terr][area[i]];
+            let areaShare = (areaSales? areaSales : 0) / report.local[terr];
+            let largeArcFlag = areaShare > 0.5 ? 1 : 0;
+            let posiRad = portion + areaShare * Math.PI;
+            portion += 2 * Math.PI * areaShare;
+            endX = 130 + 75 * Math.sin(portion), endY = 150 - 75 * Math.cos(portion);
+            path.setAttribute("fill", color[i]);
+            path.setAttribute("d", `M 130 150 L ${startX} ${startY} A 75 75 0 ${largeArcFlag} 1 ${endX} ${endY} Z`);
+            startX = endX, startY = endY;
+            chartArea.appendChild(path);
+
+            let percent = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            percent.setAttribute("x", 118 + 90 * Math.sin(posiRad)), percent.setAttribute("y", 157 - 90 * Math.cos(posiRad));
+            percent.setAttribute("font-size", `12px`);
+            percent.innerHTML = `${(areaShare * 100).toFixed(0)}%`;
+            chartArea.appendChild(percent);
+
+            chartArea.innerHTML +=
+              `<circle cx="255" cy=${160 - 23 * area.length / 2 + 23 * i} r="4" fill=${color[i]}></circle>
+              <text x="265" y=${164 - 23 * area.length / 2 + 23 * i} font-size="10px">${area[i].substr(3)}</text>`;
+          }
+          content.appendChild(chartArea);
         }
 
         let anchor = document.getElementById(terr);
