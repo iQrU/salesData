@@ -95,6 +95,7 @@ xlr.onreadystatechange = function() {
           let area = dataDealer.terrOrg[terr];
           let color = ["red", "orange", "yellowgreen", "green", "skyblue", "blue", "purple"];
           for (let i = 0; i < area.length; i++) {
+            let areaSales = coverData.local[terr][area[i]];
             content.innerHTML += `<li class="item" id="${area[i]}">${area[i]}: ${areaSales? areaSales : 0}
               (${((areaSales? areaSales : 0)/dataDealer.sumReport.local.total * 100).toFixed(1)}%)</li>`;
           }
