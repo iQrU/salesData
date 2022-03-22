@@ -841,7 +841,7 @@ let dataDealer = {
     }
 
     let idx = dataArray[0].indexOf("주소");
-    dataArray[0].push("지역", "Territory", "Clan");
+    dataArray[0].push("지역", "Territory", "Clan", "Period", "Grade");
     this.header = dataArray[0];
     for (let i = 1; i < dataArray.length; i++) {
       let address = dataArray[i][idx];
@@ -853,6 +853,13 @@ let dataDealer = {
       for (let group in this.clan) {
         if (this.clan[group].indexOf(territory) != -1) dataArray[i].push(group);
       }
+
+      let date = dataArray[i][idx2];
+      let period = date.match(/-(\d{2})-/)[1] % 12 + 1 + "P";
+      dataArray[i].push(period);
+
+      let grade = this.getGrade(dataArray[i]);
+      dataArray[i].push(grade);
     }
     this.resultArray = dataArray;
     return dataArray;
@@ -873,6 +880,18 @@ let dataDealer = {
       if (this.terrOrg[num].indexOf(record[ticketIdx]) != -1) return num;
     }
     return "others";  
+  },
+
+  getGrade: function(record) {
+    let codeIdx = this.header.indexOf("거래처"), accountIdx = this.header.indexOf("거래처명");
+    const gradeTag = {A: "ⓐ", B: "ⓑ", C: "ⓒ"};
+    for (let grade in this.target) {
+      if (this.target[grade].indexOf(record[codeIdx] * 1) != -1) {
+        record[accountIdx] += gradeTag[grade];
+        return grade;
+      }
+    }
+    return "";
   },
 
   summerizer: function(criteria1, criteria2, criteria3, criteria4) {
