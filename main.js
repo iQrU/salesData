@@ -840,7 +840,7 @@ let dataDealer = {
       dataArray.push(rowArray);
     }
 
-    let idx = dataArray[0].indexOf("주소");
+    let idx = dataArray[0].indexOf("주소"), idx2 = dataArray[0].indexOf("일자");
     dataArray[0].push("지역", "Territory", "Clan", "Period", "Grade");
     this.header = dataArray[0];
     for (let i = 1; i < dataArray.length; i++) {
