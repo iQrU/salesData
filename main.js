@@ -890,10 +890,10 @@ let dataDealer = {
 
   getGrade: function(record) {
     let codeIdx = this.header.indexOf("거래처"), accountIdx = this.header.indexOf("거래처명");
-    const gradeTag = {A: "ⓐ", B: "ⓑ", C: "ⓒ"};
+    const gradeTag = {A: "red", B: "blue", C: "green"};
     for (let grade in this.target) {
       if (this.target[grade].indexOf(record[codeIdx] * 1) != -1) {
-        record[accountIdx] += gradeTag[grade];
+        record[accountIdx] = `<font color=${gradeTag[grade]}>•</font>${record[accountIdx]}`;
         return grade;
       }
     }
