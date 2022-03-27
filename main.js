@@ -1,215 +1,34 @@
 'use strict';
 
-let distObj = {
-  서울: ["강남구", "강동구", "강북구", "강서구", "관악구", "광진구", "구로구", "금천구", "노원구", "도봉구", "동대문구", "동작구", "마포구", "서대문구", "서초구", "성동구", "성북구", "송파구", "양천구", "영등포구", "용산구", "은평구", "종로구", "중구", "중랑구"],
-  부산: ["강서구", "금정구", "기장군", "남구", "동구", "동래구", "부산진구", "북구", "사상구", "사하구", "서구", "수영구", "연제구", "연수구", "영도구", "중구", "해운대구"],
-  인천: ["강화군", "계양구", "남동구", "동구", "미추홀구", "부평구", "서구", "연수구", "중구", "옹진군"],
-  대구: ["남구", "달서구", "달성군", "동구", "북구", "서구", "수성구", "중구"],
-  광주: ["광산구", "남구", "동구", "북구", "서구"],
-  대전: ["대덕구", "동구", "서구", "유성구", "중구"],
-  울산: ["남구", "동구", "북구", "울주군", "중구"],
-  경기: ["가평군", "고양시 덕양구", "고양시 일산동구", "고양시 일산서구", "과천시", "광명시", "광주시", "구리시", "군포시", "김포시", "남양주시", "동두천시", "부천시", "성남시 분당구", "성남시 수정구", "성남시 중원구", "수원시 권선구", "수원시 영통구", "수원시 장안구", "수원시 팔달구", "시흥시", "안산시 단원구", "안산시 상록구", "안성시", "안양시 동안구", "안양시 만안구", "양주시", "양평군", "여주시", "연천군", "오산시", "용인시 기흥구", "용인시 수지구", "용인시 처인구", "의왕시", "의정부시", "이천시", "파주시", "평택시", "포천시", "하남시", "화성시"],
-  강원: ["강릉시", "고성군", "동해시", "삼척시", "속초시", "양구군", "양양군", "영월군", "원주시", "인제군", "정선군", "철원군", "춘천시", "태백시", "평창군", "홍천군", "화천군", "횡성군"],
-  충북: ["괴산군", "단양군", "보은군", "영동군", "옥천군", "음성군", "제천시", "증평군", "진천군", "청주시 상당구", "청주시 서원구", "청주시 청원구", "청주시 흥덕구", "충주시"],
-  충남: ["계룡시", "공주시", "금산군", "논산시", "당진군", "당진시", "보령시", "부여군", "서산시", "서천군", "아산시", "예산군", "천안시 동남구", "천안시 서북구", "청양군", "태안군", "홍성군"],
-  전북: ["고창군", "군산시", "김제시", "남원시", "무주군", "부안군", "순창군", "완주군", "익산시", "임실군", "장수군", "전주시 덕진구", "전주시 완산구", "정읍시", "진안군"],
-  전남: ["강진군", "고흥군", "곡성군", "광양시", "구례군", "나주시", "담양군", "목포시", "무안군", "보성군", "순천군", "순천시", "신안군", "여수시", "영광군", "영암군", "완도군", "장성군", "장흥군", "진도군", "함평군", "해남군", "화순군"],
-  경북: ["경산시", "경주시", "고령군", "구미시", "군위군", "김천시", "문경시", "봉화군", "상주시", "성주군", "안동시", "영덕군", "영양군", "영주시", "영천시", "예천군", "울릉군", "울진군", "의성군", "청도군", "청송군", "칠곡군", "포항시 남구", "포항시 북구"],
-  경남: ["거제시", "거창군", "고성군", "김해시", "남해군", "남해시", "밀양시", "사천시", "산청군", "양산시", "의령군", "장승포시", "진주시", "진해시", "창녕군", "창원시 마산합포구", "창원시 마산회원구", "창원시 성산구", "창원시 의창구", "창원시 진해구", "통영시", "하동군", "함안군", "함양군", "합천군"],
-  제주: ["서귀포시", "제주시"]
-};
-
-let terrOrg = {
-  1303: ["인천/남동구", "인천/미추홀구", "인천/연수구", "인천/동구", "경기/시흥시", "경기/김포시", "경기/안산시 상록구"]
-};
-
-let div = document.getElementById("data");
-let foot = document.getElementById("foot");
-let selector = document.querySelectorAll('.criteria');
+const div = document.getElementById("data");
+const foot = document.getElementById("foot");
+const selector = document.querySelectorAll('.criteria');
+let dataTree;
+let fruit;
 
 // 매출자료 가져오기!!
 
-let xlr = new XMLHttpRequest();
+const xlr = new XMLHttpRequest();
 let monthData = "/data/CKD Prevenar Sales data(2022.03).xls";
 xlr.open("GET", monthData);
 xlr.overrideMimeType("text/xml");
 xlr.onreadystatechange = function() {
   if (this.readyState == 4 && this.status == 200) {
-    let rawData = this.responseXML;
-    let resultArray = dataDealer.processXML(rawData);
+    dataDealer.processXML(this.responseXML);
+    dataTree = dataDealer.summerizer("Territory", "일자", "지역", "거래처명");
+    fruit = dataDealer.sumReport;
 
     selector[0].length = 1;
     for (let i in dataDealer.clan) {
       for (let j = 0; j < dataDealer.clan[i].length; j++) {
         let opt = document.createElement("option");
-        opt.setAttribute("value", dataDealer.clan[i][j]);
+        opt.value = dataDealer.clan[i][j];
         opt.innerHTML = dataDealer.clan[i][j];
         selector[0].appendChild(opt);
       }
     }
 
     makeCover();
-
-    function makeCover() {
-      selector[0].selectedIndex = 0, selector[1].length = 1;
-      div.innerHTML = "", foot.style.display = "none";
-      let coverData = dataDealer.summerizer("Clan", "Territory", "지역");
-      let coverPage = document.createElement("div");
-      coverPage.style.width = "100%";
-      div.appendChild(coverPage);
-      
-      let dataBranch = dataDealer.summerizer("Clan", "Territory", "일자");
-      let report = dataDealer.sumReport;  
-      for (let i = 0; i < dataDealer.clan.local.length; i++) {
-        let terr = dataDealer.clan.local[i];
-        let terrBox = document.createElement("div");
-        terrBox.setAttribute("class", "line");
-        coverPage.appendChild(terrBox);
-
-        let title = document.createElement("div");
-        terrBox.appendChild(title);
-        title.innerHTML = `<span class="narrow" id=${terr}><i class="far fa-plus-square"></i></span>
-          ${terr}: ${report.local[terr].toLocaleString()}
-          (${(report.local[terr]/report.local.total * 100).toFixed(1)}%)<br>`;
-
-        let content = document.createElement("div");
-        content.setAttribute("class", "has");
-        terrBox.appendChild(content);
-        if (terr == "others") {
-          for (let area in coverData.local[terr]) {
-            content.innerHTML += `<li class="item" id="${area}">${area}: ${coverData.local[terr][area]}
-              (${(coverData.local[terr][area]/report.local.total * 100).toFixed(1)}%)</li>`;
-          }
-          for (let area in coverData.local[terr]) {
-            let areaSales = document.getElementById(area);
-            areaSales.addEventListener("click", function() {
-              selector[0].value = terr;
-              let opt = document.createElement("option");
-              opt.innerHTML = area;
-              selector[1].appendChild(opt);
-              selector[1].value = area;
-              reportAreaDaily(div, foot, terr, area, dataBranch, report);
-            });
-          }
-        } else {
-          let area = dataDealer.terrOrg[terr];
-          let color = ["red", "orange", "yellowgreen", "green", "skyblue", "blue", "purple"];
-          for (let i = 0; i < area.length; i++) {
-            let areaSales = coverData.local[terr][area[i]];
-            content.innerHTML += `<li class="item" id="${area[i]}">${area[i]}: ${areaSales? areaSales : 0}
-              (${((areaSales? areaSales : 0)/dataDealer.sumReport.local.total * 100).toFixed(1)}%)</li>`;
-          }
-          for (let i = 0; i < area.length; i++) {
-            let areaSales = document.getElementById(area[i]);
-            areaSales.onclick = function() {
-              selector[0].value = terr;
-              for (let j = 0; j < area.length; j++) {
-                let opt = document.createElement("option");
-                opt.setAttribute("value", area[j]);
-                opt.innerHTML = area[j];
-                selector[1].appendChild(opt);
-                selector[1].onchange = function() {
-                  let area = selector[1][selector[1].selectedIndex].value;
-                  if (selector[1].selectedIndex != 0) {
-                    reportAreaDaily(div, foot, terr, area, dataBranch, report);
-                  } else {
-                    reportDaily(div, foot, selector, dataBranch, report);
-                  }
-                };    
-              }
-              selector[1].value = area[i];
-              reportAreaDaily(div, foot, terr, area[i], dataBranch, report);
-            };
-          }
-          let chartArea = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-          chartArea.setAttribute("width", "340"), chartArea.setAttribute("height", "250");
-
-          let title = document.createElementNS("http://www.w3.org/2000/svg", "text");
-          title.setAttribute("x", 30), title.setAttribute("y", 35);
-          title.innerHTML = "🍩 Territory 내 지역별 비중 🍉";
-          chartArea.appendChild(title);
-
-          let startX = 130, startY = 75, endX, endY, portion = 0;
-          for (let i = 0; i < area.length; i++) {
-            let path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-            let areaSales = coverData.local[terr][area[i]];
-            let areaShare = (areaSales? areaSales : 0) / report.local[terr];
-            let largeArcFlag = areaShare > 0.5 ? 1 : 0;
-            let posiRad = portion + areaShare * Math.PI;
-            portion += 2 * Math.PI * areaShare;
-            endX = 130 + 75 * Math.sin(portion), endY = 150 - 75 * Math.cos(portion);
-            path.setAttribute("fill", color[i]);
-            path.setAttribute("d", `M 130 150 L ${startX} ${startY} A 75 75 0 ${largeArcFlag} 1 ${endX} ${endY} Z`);
-            startX = endX, startY = endY;
-            chartArea.appendChild(path);
-
-            if (areaShare > 0.01) {
-              let percent = document.createElementNS("http://www.w3.org/2000/svg", "text");
-              percent.setAttribute("x", 120 + 90 * Math.sin(posiRad)), percent.setAttribute("y", 155 - 90 * Math.cos(posiRad));
-              percent.setAttribute("font-size", `12px`);
-              percent.innerHTML = `${(areaShare * 100).toFixed(0)}%`;
-              chartArea.appendChild(percent);
-            }
-
-            chartArea.innerHTML +=
-              `<circle cx="255" cy=${162 - 23 * area.length / 2 + 23 * i} r="4" fill=${color[i]}></circle>
-              <text x="265" y=${166 - 23 * area.length / 2 + 23 * i} font-size="10px">${area[i].substr(3)}</text>`;
-          }
-          content.appendChild(chartArea);
-        }
-
-        let anchor = document.getElementById(terr);
-        anchor.onclick = function() {
-          if (content.classList.value == "has active") {
-            anchor.innerHTML = '<i class="far fa-plus-square"></i>';
-            title.style.color = "black", title.style.fontStyle = "normal", title.style.fontWeight = "normal";
-          } else {
-            anchor.innerHTML = '<i class="far fa-minus-square"></i>';
-            title.style.color = "darkolivegreen", title.style.fontStyle = "italic", title.style.fontWeight = "bold";
-          }
-          content.classList.toggle('active');
-          /*let menus = document.querySelectorAll('.far');
-          menus.forEach(menu => {
-            menu.onmouseover = function() {
-              menu.style.color = "#34346895";
-            };
-            menu.onmouseout = function() {
-              menu.style.color = "#34346830";
-            };
-          });*/
-        }
-      }
-
-      if (document.querySelectorAll('.bubble')) {
-        let menuBox = document.querySelectorAll('.bubble');
-        for (let i = 0; i < menuBox.length; i++) {
-          menuBox[i].style.display = "none";
-        }
-      }
-      /*let menus = document.querySelectorAll('.fa-plus-square');
-      menus.forEach(menu => {
-        menu.onmouseover = function() {
-          menu.style.color = "#34346895";
-        };
-        menu.onmouseout = function() {
-          menu.style.color = "#34346830";
-        };
-      });*/
-    }
-
-    let clip = document.querySelector('.fa-redo');
-    /*clip.onmouseover = function() {
-      if (foot.style.display == "block") {
-        clip.style.color = "brown";
-      }
-    };
-    clip.onmouseout = function() {
-      clip.style.color = "darkolivegreen";
-    };*/
-    clip.onclick = makeCover;
-
-    let dataBranch = dataDealer.summerizer("Clan", "Territory", "일자");
-    let report = dataDealer.sumReport;
 
     selector[0].addEventListener("change", function() {
       let idx = selector[0].selectedIndex;
@@ -218,122 +37,14 @@ xlr.onreadystatechange = function() {
       if (territory != "GH") {
         for (let i = 0; i < dataDealer.terrOrg[territory].length; i++) {
           let opt = document.createElement("option");
-          opt.setAttribute("value", dataDealer.terrOrg[territory][i]);
+          opt.value = dataDealer.terrOrg[territory][i];
           opt.innerHTML = dataDealer.terrOrg[territory][i];
           selector[1].appendChild(opt);
+          selector[1].onchange = reportDaily;
         }
       }
-
-      reportDaily(div, foot, selector, dataBranch, report);
-      selector[1].onchange = function() {
-        reportDaily(div, foot, selector, dataBranch, report);
-      };
+      reportDaily();
     });
-
-    /*btn.onclick = function() {
-      div.innerHTML = "", foot.innerHTML = "";
-      let dataTree, myData;
-      let idx = selector[0].selectedIndex;
-      let territory = selector[0][idx].value;
-      let dataBranch = dataDealer.summerizer("Clan", "Territory", "일자");
-      let report = dataDealer.sumReport;
-      if (selector[1].selectedIndex) {
-        let idx2 = selector[1].selectedIndex;
-        let ticket = selector[1][idx2].value;
-        dataTree = dataDealer.summerizer("Territory", "지역", "일자", "거래처명");
-        myData = dataTree[territory][ticket];
-      } else {
-        dataTree = dataDealer.summerizer("Territory", "일자", "거래처명");
-        myData = dataTree[territory];
-      }
-      let total = 0;
-      for (let date in myData) {
-        let sum = 0;
-        let unit = document.createElement("div");
-        unit.setAttribute("class", "unit");
-        div.insertBefore(unit, div.firstChild);
-        let lid = document.createElement("div");
-        lid.setAttribute("class", "lid");
-        unit.appendChild(lid);
-        lid.innerHTML += date + "<br>";
-        let belly = document.createElement("div");
-        belly.setAttribute("class", "belly");
-        unit.appendChild(belly);
-        for (let clinic in myData[date]) {
-          belly.innerHTML += ` ${clinic}: ${myData[date][clinic]}` + "<br>";
-          sum += myData[date][clinic];
-        }
-        if (selector[1].selectedIndex) {
-          belly.innerHTML += "-----------------------<br>" + `total: ${sum}/${dataBranch["local"][territory][date]}
-            (${(sum/dataBranch["local"][territory][date] * 100).toFixed(1)}%)` + "<br>";
-        } else {
-          let local = dataBranch["local"], terrSum = 0;
-          for (let terr in local) {
-            local[terr][date] ? terrSum += local[terr][date] : terrSum += 0;
-          }
-          belly.innerHTML += "-----------------------<br>" + `total: ${sum}/${terrSum}
-            (${(sum/terrSum * 100).toFixed(1)}%)` + "<br>";
-        }
-        total += sum;
-      }
-      if (selector[1].selectedIndex) {
-        foot.innerHTML += `지역비중: ${total}/${report["local"][territory]}
-          (${(total/report["local"][territory] * 100).toFixed(1)}%)` + "<br>";
-      } else {
-        foot.innerHTML += `누적비중: ${total}/${report["local"].total}
-          (${(total/report["local"].total * 100).toFixed(1)}%)` + "<br>";
-      }
-      console.log(selector[0].selectedIndex, selector[1].selectedIndex);
-    }*/
-
-
-    /*let dataTree = dataDealer.summerizer("Territory", "일자", "거래처명");
-    let dataBranch = dataDealer.summerizer("Clan", "일자");
-    let report = dataDealer.sumReport;
-    let myTerr = dataTree["1303"];
-    let total = 0;
-    for (let date in myTerr) {
-      let sum = 0;
-      let unit = document.createElement("div");
-      unit.setAttribute("class", "unit");
-      div.insertBefore(unit, div.firstChild);
-      let lid = document.createElement("div");
-      lid.setAttribute("class", "lid");
-      unit.appendChild(lid);
-      lid.innerHTML += date + "<br>";
-      let belly = document.createElement("div");
-      belly.setAttribute("class", "belly");
-      unit.appendChild(belly);
-    for (let clinic in myTerr[date]) {
-          belly.innerHTML += ` ${clinic}: ${myTerr[date][clinic]}` + "<br>";
-          sum += myTerr[date][clinic];
-        }
-      belly.innerHTML += "-----------------------<br>" + `total: ${sum}/${dataBranch["local"][date]}
-        (${(sum/dataBranch["local"][date] * 100).toFixed(1)}%)` + "<br>";
-      let para = document.createElement("p");
-      unit.appendChild(para);
-      total += sum;
-    }
-    div.innerHTML += `누적비중: ${total}/${report["local"]}
-      (${(total/report["local"] * 100).toFixed(2)}%)` + "<br><br>";
-
-    let newResultArr = [];
-    newResultArr.push(resultArray[0]);
-    for (let i = 1; i < resultArray.length; i ++) {
-      if (resultArray[i][resultArray[i].length - 2] == "1303") {
-        newResultArr.push(resultArray[i]);
-      }
-    }
-    let summeryObj = processData(newResultArr, "일자", "거래처명");
-    let totalSumObj = processData(resultArray, "일자", "Territory");
-    for (let date in summeryObj) {
-      let sum = 0;
-      for (let clinic in summeryObj[date]) {
-        div.innerHTML += `${date}> ${clinic}: ${summeryObj[date][clinic]}` + "<br>";
-        sum += summeryObj[date][clinic];
-      }
-      div.innerHTML += `subTotal(${date}): ${sum}/${totalSumObj[date]["others"] + sum}(${(sum/(totalSumObj[date]["others"] + sum) * 100).toFixed(1)}%)` + "<br><br>";
-    }*/
   }
 };
 xlr.send();
@@ -381,18 +92,234 @@ calendar.onclick = function() {
   }
 };
 
-function reportDaily(container1, container2, selector, auxData, auxReport) {
-  container1.innerHTML = "", container2.innerHTML = "";
-  let dataTree = dataDealer.summerizer("Territory", "일자", "지역", "거래처명");
+let clip = document.querySelector('.fa-redo');
+clip.onclick = makeCover;
+
+function makeCover() {
+  selector[0].selectedIndex = 0, selector[1].length = 1;
+  div.innerHTML = "", foot.style.display = "none";
+  let coverData = {}, gradeData = dataDealer.summerizer("Territory", "Grade");
+  let coverPage = document.createElement("div");
+  coverPage.style.width = "100%";
+  div.appendChild(coverPage);
+  
+  let localSum = 0;
+  for (let i = 0; i < dataDealer.clan.local.length; i++) {
+    let terr = dataDealer.clan.local[i];
+    localSum += fruit[terr].total;
+    coverData[terr] = {};
+    for (let date in fruit[terr]) {
+      for (let area in fruit[terr][date]) {
+        if (area != "total") {
+          coverData[terr][area] ?
+            coverData[terr][area] += fruit[terr][date][area] : coverData[terr][area] = fruit[terr][date][area];
+        }
+      }
+    }
+  }
+
+  for (let i = 0; i < dataDealer.clan.local.length; i++) {
+    let terr = dataDealer.clan.local[i];
+    let terrBox = document.createElement("div");
+    terrBox.setAttribute("class", "line");
+    coverPage.appendChild(terrBox);
+
+    let title = document.createElement("div");
+    terrBox.appendChild(title);
+    title.innerHTML = `<span class="narrow" id=${terr}><i class="far fa-plus-square"></i></span>
+      ${terr}: ${fruit[terr].total.toLocaleString()}
+      (${(fruit[terr].total/localSum * 100).toFixed(1)}%)<br>`;
+
+    let content = document.createElement("div");
+    content.setAttribute("class", "has");
+    terrBox.appendChild(content);
+    if (terr == "others") {
+      for (let area in coverData[terr]) {
+        content.innerHTML += `<li class="item" id="${area}">${area}: ${coverData[terr][area]}
+          (${(coverData[terr][area]/localSum * 100).toFixed(1)}%)</li>`;
+      }
+      for (let area in coverData[terr]) {
+        let areaSales = document.getElementById(area);
+        areaSales.addEventListener("click", function() {
+          selector[0].value = terr;
+          let opt = document.createElement("option");
+          opt.innerHTML = area;
+          selector[1].appendChild(opt);
+          selector[1].value = area;
+          reportDaily();
+        });
+      }
+    } else {
+      let area = dataDealer.terrOrg[terr];
+      let color = ["red", "orange", "yellowgreen", "green", "skyblue", "blue", "purple"];
+      /*let canvas = document.createElement("canvas");
+      canvas.height = 220, canvas.width = 320;
+      canvas.setAttribute("style", "{width: 300px; height: 220px;}");
+      let context = canvas.getContext("2d");
+      let startRad = -0.5 * Math.PI;
+      context.fillStyle = "darkolivegreen";
+      context.font = "1.6em Lucida Grande";
+      context.fillText("🍩 Territory 내 지역별 비중 🍉", 20, 30);*/
+      for (let i = 0; i < area.length; i++) {
+        let areaSales = coverData[terr][area[i]];
+        //let portion = (areaSales? areaSales : 0) / report.local[terr];
+        //let posiRad = startRad + (0.5 + portion) * Math.PI;
+        content.innerHTML += `<li class="item" id="${area[i]}">${area[i]}: ${areaSales? areaSales : 0}
+          (${((areaSales? areaSales : 0)/localSum * 100).toFixed(1)}%)</li>`;
+        /*context.beginPath();
+        context.arc(125, 130, 65, startRad, startRad + portion * 2 * Math.PI, areaSales > 0 ? false : true);
+        context.lineTo(125, 130);
+        context.fillStyle = color[i];
+        context.fill();
+        context.fillRect(235, (canvas.height + 50) / 2 - 23 * area.length / 2 + 23 * i, 7, 7);
+        if(portion > 0.01) {
+          context.fillStyle = "black";
+          context.font = "1.2em Lucida Grande";
+          context.fillText((portion * 100).toFixed(0) + "%", 116 + 80 * Math.sin(posiRad), 136 - 80 * Math.cos(posiRad));
+        }
+        context.font = "1em Lucida Grande";
+        context.fillText(area[i].substr(3), 250, (canvas.height + 63) / 2 - 23 * area.length / 2 + 23 * i);
+        context.closePath();
+        startRad += portion * 2 * Math.PI;*/
+      }
+      //content.appendChild(canvas);
+
+      for (let i = 0; i < area.length; i++) {
+        let areaSales = document.getElementById(area[i]);
+        areaSales.onclick = function() {
+          selector[0].value = terr;
+          for (let j = 0; j < area.length; j++) {
+            let opt = document.createElement("option");
+            opt.setAttribute("value", area[j]);
+            opt.innerHTML = area[j];
+            selector[1].appendChild(opt);
+            selector[1].onchange = reportDaily;
+          }
+          selector[1].value = area[i];
+          reportDaily();
+        };
+      }
+
+      let chartArea = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      chartArea.setAttribute("width", "340"), chartArea.setAttribute("height", "250");
+
+      let title = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      title.setAttribute("x", 30), title.setAttribute("y", 35);
+      title.innerHTML = "🌈 Territory 내 지역별 비중 🌏";
+      chartArea.appendChild(title);
+
+      let startX = 130, startY = 75, endX, endY, portion = 0;
+      for (let i = 0; i < area.length; i++) {
+        let path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        let areaSales = coverData[terr][area[i]];
+        let areaShare = (areaSales? areaSales : 0) / fruit[terr].total;
+        let largeArcFlag = areaShare > 0.5 ? 1 : 0;
+        let posiRad = portion + areaShare * Math.PI;
+        portion += 2 * Math.PI * areaShare;
+        endX = 130 + 75 * Math.sin(portion), endY = 150 - 75 * Math.cos(portion);
+        path.setAttribute("fill", color[i]), path.setAttribute("stroke", "white");
+        path.setAttribute("d", `M 130 150 L ${startX} ${startY} A 75 75 0 ${largeArcFlag} 1 ${endX} ${endY} Z`);
+        startX = endX, startY = endY;
+        chartArea.appendChild(path);
+
+        if (areaShare > 0.01) {
+          let percent = document.createElementNS("http://www.w3.org/2000/svg", "text");
+          percent.setAttribute("x", 120 + 90 * Math.sin(posiRad)), percent.setAttribute("y", 155 - 90 * Math.cos(posiRad));
+          percent.setAttribute("font-size", `12px`);
+          percent.innerHTML = `${(areaShare * 100).toFixed(0)}%`;
+          chartArea.appendChild(percent);  
+        }
+
+        chartArea.innerHTML +=
+          `<circle cx="255" cy=${162 - 23 * area.length / 2 + 23 * i} r="4" fill=${color[i]}></circle>
+          <text x="265" y=${166 - 23 * area.length / 2 + 23 * i} font-size="10px">${area[i].substr(3)}</text>`;
+      }
+      content.appendChild(chartArea);
+      let center = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      center.setAttribute("cx", 130), center.setAttribute("cy", 150), center.setAttribute("r", 45), center.setAttribute("fill", "white");
+      chartArea.appendChild(center);
+
+      chartArea.innerHTML += `<text x="90" y="157" font-size="18px" font-style="italic" font-weight="bold" fill="darkolivegreen">VAC${terr}</text>`;
+
+      if (terr == "2306") {
+        let gradeChart = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        gradeChart.setAttribute("width", "340"), gradeChart.setAttribute("height", "250");
+  
+        let gradeTitle = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        gradeTitle.setAttribute("x", 30), gradeTitle.setAttribute("y", 35);
+        gradeTitle.innerHTML = "⛳ Territory 내 등급별 비중 🎳";
+        gradeChart.appendChild(gradeTitle);
+        let gradeColor = {A: "red", B: "blue", C: "green", D: "yellowgreen"};
+        startX = 130, startY = 75, endX, endY, portion = 0;
+        for (let grade in dataDealer.target) {
+          let path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+          let gradeSales = gradeData[terr][grade];
+          let gradeShare = (gradeSales? gradeSales : 0) / fruit[terr].total;
+          let largeArcFlag = gradeShare > 0.5 ? 1 : 0;
+          let posiRad = portion + gradeShare * Math.PI;
+          portion += 2 * Math.PI * gradeShare;
+          endX = 130 + 75 * Math.sin(portion), endY = 150 - 75 * Math.cos(portion);
+          path.setAttribute("fill", gradeColor[grade]), path.setAttribute("stroke", "white");
+          path.setAttribute("d", `M 130 150 L ${startX} ${startY} A 75 75 0 ${largeArcFlag} 1 ${endX} ${endY} Z`);
+          startX = endX, startY = endY;
+          gradeChart.appendChild(path);
+  
+          if (gradeShare > 0.01) {
+            let percent = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            percent.setAttribute("x", 120 + 90 * Math.sin(posiRad)), percent.setAttribute("y", 155 - 90 * Math.cos(posiRad));
+            percent.setAttribute("font-size", `12px`);
+            percent.innerHTML = `${(gradeShare * 100).toFixed(0)}%`;
+            gradeChart.appendChild(percent);  
+          }
+  
+          gradeChart.innerHTML +=
+            `<circle cx="255" cy=${116 + 23 * (grade.charCodeAt(0) - 65)} r="4" fill=${gradeColor[grade]}></circle>
+            <text x="265" y=${120 + 23 * (grade.charCodeAt(0) - 65)} font-size="10px" font-style="italic">${grade} (${gradeSales} / ${fruit[terr].total})</text>`;
+        }
+        content.appendChild(gradeChart);
+        let center = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        center.setAttribute("cx", 130), center.setAttribute("cy", 150), center.setAttribute("r", 45), center.setAttribute("fill", "white");
+        gradeChart.appendChild(center);
+
+        gradeChart.innerHTML += `<text x="90" y="140" font-size="9px" font-style="italic" font-weight="bold" fill="darkolivegreen">Target Share</text>`;
+        gradeChart.innerHTML += `<text x="105" y="160" font-size="18px" font-style="italic" font-weight="bold" fill="orange">${((1 - gradeData[terr].D / fruit[terr].total) * 100).toFixed(1)}%</text>`;
+      }
+
+    }
+
+    let anchor = document.getElementById(terr);
+    anchor.onclick = function() {
+      if (content.classList.value == "has active") {
+        anchor.innerHTML = '<i class="far fa-plus-square"></i>';
+        title.style.color = "black", title.style.fontStyle = "normal", title.style.fontWeight = "normal";
+      } else {
+        anchor.innerHTML = '<i class="far fa-minus-square"></i>';
+        title.style.color = "darkolivegreen", title.style.fontStyle = "italic", title.style.fontWeight = "bold";
+      }
+      content.classList.toggle('active');
+    }
+  }
+
+  if (document.querySelectorAll('.bubble')) {
+    let menuBox = document.querySelectorAll('.bubble');
+    for (let i = 0; i < menuBox.length; i++) {
+      menuBox[i].style.display = "none";
+    }
+  }
+}
+
+function reportDaily() {
+  div.innerHTML = "", foot.innerHTML = "";
   let idx = selector[0].selectedIndex, territory = selector[0][idx].value;
   let idx2 = selector[1].selectedIndex, ticket = selector[1][idx2].value;
   let myData = dataTree[territory];
   let total = 0, day = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  
   for (let date in myData) {
     let sum = 0;
     let unit = document.createElement("div");
     unit.setAttribute("class", "unit");
-    container1.insertBefore(unit, container1.firstChild);
+    div.insertBefore(unit, div.firstChild);
     let lid = document.createElement("div");
     lid.setAttribute("class", "lid");
     unit.appendChild(lid);
@@ -404,40 +331,45 @@ function reportDaily(container1, container2, selector, auxData, auxReport) {
     unit.appendChild(belly);
     if (selector[1].selectedIndex) {
       let content = document.createElement("div");
-      content.style.padding = "5px 15px 10px 15px";
+      content.style.padding = "5px 10px 10px 15px";
       belly.appendChild(content);
-      for (let clinic in myData[date][ticket]) {
-        content.innerHTML += ` ${clinic}: ${myData[date][ticket][clinic].toLocaleString()}` + "<br>";
-        sum += myData[date][ticket][clinic];
+      if (myData[date][ticket]) {
+        for (let clinic in myData[date][ticket]) {
+          content.innerHTML += ` ${clinic}: ${myData[date][ticket][clinic].toLocaleString()}` + "<br>";
+          sum += myData[date][ticket][clinic];
+        }  
+      } else {
+        content.innerHTML = `💤 💤 💤`;
       }
       let bottom = document.createElement("div");
       bottom.setAttribute("class", "bottom");
       belly.appendChild(bottom);
-      bottom.innerHTML += `total: ${sum.toLocaleString()}/${auxData["local"][territory][date].toLocaleString()}
-        (${(sum/auxData["local"][territory][date] * 100).toFixed(1)}%)` + "<br>";
+      bottom.innerHTML += `total: ${sum.toLocaleString()}/${fruit[territory][date].total.toLocaleString()}
+        (${(sum/fruit[territory][date].total * 100).toFixed(1)}%)` + "<br>";
     } else {
       for (let ticket in myData[date]) {
         belly.innerHTML += `<p class="belt">${ticket}</p>`;
         let content = document.createElement("div");
-        content.style.padding = "5px 15px 10px 15px";
+        content.style.padding = "5px 10px 10px 15px";
         belly.appendChild(content);
         for (let clinic in myData[date][ticket]) {
           content.innerHTML += ` ${clinic}: ${myData[date][ticket][clinic].toLocaleString()}` + "<br>";
           sum += myData[date][ticket][clinic];
         }
       }
-      let content = document.createElement("div");
-      content.setAttribute("class", "bottom");
-      belly.appendChild(content);
-      if (territory != "NIP" && territory != "도매") {
-        let local = auxData["local"], terrSum = 0;
-        for (let terr in local) {
-          local[terr][date] ? terrSum += local[terr][date] : terrSum += 0;
+      let bottom = document.createElement("div");
+      bottom.setAttribute("class", "bottom");
+      belly.appendChild(bottom);
+      if (dataDealer.clan.local.indexOf(territory) != -1) {
+        let terrSum = 0;
+        for (let i = 0; i < dataDealer.clan.local.length; i++) {
+          let terr = dataDealer.clan.local[i];
+          fruit[terr][date] ? terrSum += fruit[terr][date].total : terrSum += 0;
         }
-        content.innerHTML += `total: ${sum.toLocaleString()}/${terrSum.toLocaleString()}
+        bottom.innerHTML += `total: ${sum.toLocaleString()}/${terrSum.toLocaleString()}
           (${(sum/terrSum * 100).toFixed(1)}%)` + "<br>";
       } else {
-        content.innerHTML += `total: ${sum.toLocaleString()}`;
+        bottom.innerHTML += `total: ${sum.toLocaleString()}`;
       }
     }
     total += sum;
@@ -445,63 +377,27 @@ function reportDaily(container1, container2, selector, auxData, auxReport) {
 
   let showIt = document.createAttribute("style");
   showIt.value = "display: block";
-  container2.setAttributeNode(showIt);
+  foot.setAttributeNode(showIt);
   if (selector[1].selectedIndex) {
-    container2.innerHTML = `Territory ${territory} 내 비중(${ticket}): ${total.toLocaleString()}/${auxReport["local"][territory].toLocaleString()}
-      (${(total/auxReport["local"][territory] * 100).toFixed(1)}%)` + "<br>";
-  } else if (territory == "GH") {
-    container2.innerHTML = `${territory} 비중: ${total.toLocaleString()}/${(auxReport["local"].total + auxReport["GH"].total).toLocaleString()}
-      (${(total/(auxReport["local"].total + auxReport["GH"].total) * 100).toFixed(1)}%)` + "<br>";
+    foot.innerHTML = `Territory ${territory} 내 비중(${ticket}): ${total.toLocaleString()}/${fruit[territory].total.toLocaleString()}
+      (${(total/fruit[territory].total * 100).toFixed(1)}%)` + "<br>";
   } else if (territory != "NIP" && territory != "도매") {
-    container2.innerHTML = `Territory ${territory} 비중: ${total.toLocaleString()}/${auxReport["local"].total.toLocaleString()}
-      (${(total/auxReport["local"].total * 100).toFixed(1)}%)` + "<br>";
-  } else {
-    container2.innerHTML = `${territory} 비중: ${total.toLocaleString()}/${auxReport.Total.toLocaleString()} (${(total/auxReport.Total * 100).toFixed(1)}%)`;
-  }
-}
-
-function reportAreaDaily(container1, container2, territory, area, auxData, auxReport) {
-  container1.innerHTML = "", container2.innerHTML = "";
-  let dataTree = dataDealer.summerizer("Territory", "일자", "지역", "거래처명");
-  let myData = dataTree[territory];
-  console.log(myData);
-  let total = 0, day = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-  for (let date in myData) {
-    if (myData[date][area]) {
-      let sum = 0;
-      let unit = document.createElement("div");
-      unit.setAttribute("class", "unit");
-      container1.insertBefore(unit, container1.firstChild);
-      let lid = document.createElement("div");
-      lid.setAttribute("class", "lid");
-      unit.appendChild(lid);
-      let tempDate = new Date();
-      tempDate.setFullYear(date.substr(0,4) * 1, date.substr(5,2) * 1 - 1, date.substr(8,2) * 1);
-      lid.innerHTML = date + " " + day[tempDate.getDay()].substr(0,3) + ".";
-      let belly = document.createElement("div");
-      belly.setAttribute("class", "belly");
-      unit.appendChild(belly);
-      let content = document.createElement("div");
-      content.style.padding = "5px 15px 10px 15px";
-      belly.appendChild(content);
-      for (let clinic in myData[date][area]) {
-        content.innerHTML += ` ${clinic}: ${myData[date][area][clinic].toLocaleString()}` + "<br>";
-        sum += myData[date][area][clinic];
-      }
-      let bottom = document.createElement("div");
-      bottom.setAttribute("class", "bottom");
-      belly.appendChild(bottom);
-      bottom.innerHTML += `total: ${sum.toLocaleString()}/${auxData["local"][territory][date].toLocaleString()}
-        (${(sum/auxData["local"][territory][date] * 100).toFixed(1)}%)` + "<br>";
-      total += sum;  
+    let localSum = 0;
+    for (let i = 0; i < dataDealer.clan.local.length; i++) {
+      let terr = dataDealer.clan.local[i];
+      localSum += fruit[terr].total;
+    }  
+    if (territory == "GH") {
+      foot.innerHTML = `${territory} 비중: ${total.toLocaleString()}/${(localSum + fruit["GH"].total).toLocaleString()}
+        (${(total/(localSum + fruit["GH"].total) * 100).toFixed(1)}%)` + "<br>";
+    } else {
+      foot.innerHTML = `Territory ${territory} 비중: ${total.toLocaleString()}/${localSum.toLocaleString()}
+        (${(total/localSum * 100).toFixed(1)}%)` + "<br>";
     }
+  } else {
+    foot.innerHTML = `${territory} 비중: ${total.toLocaleString()}/${fruit.Total.toLocaleString()}
+     (${(total/fruit.Total * 100).toFixed(1)}%)`;
   }
-
-  let showIt = document.createAttribute("style");
-  showIt.value = "display: block";
-  container2.setAttributeNode(showIt);
-  container2.innerHTML = `Territory ${territory} 내 비중(${area}): ${total.toLocaleString()}/${auxReport["local"][territory].toLocaleString()}
-    (${(total/auxReport["local"][territory] * 100).toFixed(1)}%)` + "<br>";
 }
 
 function processRaw(data) {
@@ -536,7 +432,7 @@ function getArea(address) {
 }
 
 function getTerr(record) {
-  for (num in terrOrg) {
+  for (let num in terrOrg) {
     if (record[5].indexOf("보건") != -1 && record[5].indexOf("의원") == -1) {
       return "NIP";
     } else if (record[record.length - 2].indexOf("도매") != -1) {
@@ -647,7 +543,7 @@ function getTotal(dataArray) {
   console.log(total);
 }
 
-let addrDealer = {
+const addrDealer = {
 
   wideArea: ["서울", "부산", "인천", "대구", "광주", "대전", "울산", "경기", "강원", "충북", "충남", "전북", "전남", "경북", "경남", "제주", "세종"],
   metro: ["서울", "부산", "인천", "대구", "광주", "대전", "울산"],
@@ -806,7 +702,7 @@ let addrDealer = {
 
 }
 
-let dataDealer = {
+const dataDealer = {
 
   terrOrg: {
     1303: ["인천/남동구", "인천/미추홀구", "인천/연수구", "인천/동구", "서울/구로구", "경기/시흥시", "경기/안산시 상록구"],
@@ -828,7 +724,8 @@ let dataDealer = {
   target: {
     A: [10008115,10008158,10008196,10008206,10008226,10008238,10008315,10008324,10008376,10008378,10008384,10008400,10008404,10010994,10012037,10012585,10037118,10042310,10042469,10044110,10050941,10054496],
     B: [10008179,10008195,10008235,10008268,10008284,10008293,10008403,10011038,10011072,10011078,10034710,10034905,10035787,10035949,10038724,10038972,10039176,10046460,10046917,10050899,10051268,10055541,10058466,10060994,10063493,10064917],
-    C: [10008178,10008183,10008188,10008219,10008291,10008312,10008380,10010631,10010952,10011058,10035474,10035867,10051457,10059254]
+    C: [10008178,10008183,10008188,10008219,10008291,10008312,10008380,10010631,10010952,10011058,10035474,10035867,10051457,10059254],
+    D: []
   },
 
   resultArray: [],
@@ -897,7 +794,7 @@ let dataDealer = {
         return grade;
       }
     }
-    return "";
+    return "D";
   },
 
   summerizer: function(criteria1, criteria2, criteria3, criteria4) {
@@ -1017,50 +914,36 @@ let dataDealer = {
         }
       }
     }
-
-    /*let total = 0;
-    this.sumReport = {};
-    for (let item in summeryObj) {
-      if (!isNaN(summeryObj[item])) {
-        total += summeryObj[item];
-      } else {
-        let semiTotal = 0;
-        for (let item2 in summeryObj[item]) {
-          if (!isNaN(summeryObj[item][item2])) {
-            semiTotal += summeryObj[item][item2];
-          } else {
-            let subTotal = 0;
-            this.sumReport[item] ?
-              this.sumReport[item] : this.sumReport[item] = {};
-            for (let item3 in summeryObj[item][item2]) {
-              if (!isNaN(summeryObj[item][item2][item3])) {
-                subTotal += summeryObj[item][item2][item3];
-              } else {
-                let sum = 0;
-                this.sumReport[item][item2] ?
-                  this.sumReport[item][item2] : this.sumReport[item][item2] = {};
-                for (let item4 in summeryObj[item][item2][item3]) {
-                  sum += summeryObj[item][item2][item3][item4];
-                  this.sumReport[item][item2][item3] = sum;
-                }
-                subTotal += sum;
-              }
-              isNaN(summeryObj[item][item2][item3]) ?
-                this.sumReport[item][item2]["total"] = subTotal :
-                this.sumReport[item][item2] = subTotal;
-            }
-            semiTotal += subTotal;
-          }
-          isNaN(summeryObj[item][item2]) ?
-            this.sumReport[item]["total"] = semiTotal :
-            this.sumReport[item] = semiTotal;
-        }
-        total += semiTotal;
-      }
-      this.sumReport["Total"] = total;
-    }*/
     return summeryObj;
   }
-  
 }
+
+/*
+let xhr = new XMLHttpRequest();
+let accountHistory = {};
+xhr.overrideMimeType("text/xml");
+xhr.onreadystatechange = function() {
+  if (this.readyState == 4 && this.status == 200) {
+    dataDealer.processXML(this.responseXML);
+    let accountSales = dataDealer.summerizer("거래처명", "일자");
+    for (let account in accountSales) {
+      if (accountHistory[account]) {
+        for (let date in accountSales[account]) {
+          accountHistory[account][date] = accountSales[account][date];
+        }
+      } else {
+        accountHistory[account] = {};
+        for (let date in accountSales[account]) {
+          accountHistory[account][date] = accountSales[account][date];
+        }
+      }
+    }
+  }
+};
+for (let i = 0; i < 12; i++) {
+  xhr.open("GET", "/data/CKD Prevenar Sales data(2021." + (i > 8 ? (i + 1) : "0" + (i + 1)) + ").xls", false);
+  xhr.send();
+}
+//console.log(accountHistory);
+*/
 
