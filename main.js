@@ -239,7 +239,7 @@ function makeCover() {
       center.setAttribute("cx", 130), center.setAttribute("cy", 150), center.setAttribute("r", 45), center.setAttribute("fill", "white");
       chartArea.appendChild(center);
 
-      chartArea.innerHTML += `<text x="90" y="157" font-size="18px" font-style="italic" font-weight="bold" fill="darkolivegreen">VAC${terr}</text>`;
+      chartArea.innerHTML += `<text x="93" y="157" font-size="18px" font-style="italic" font-weight="bold" fill="darkolivegreen">VAC${terr}</text>`;
 
       if (terr == "2306") {
         let gradeChart = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -282,7 +282,7 @@ function makeCover() {
         gradeChart.appendChild(center);
 
         gradeChart.innerHTML += `<text x="90" y="140" font-size="9px" font-style="italic" font-weight="bold" fill="darkolivegreen">Target Share</text>`;
-        gradeChart.innerHTML += `<text x="105" y="160" font-size="18px" font-style="italic" font-weight="bold" fill="orange">${((1 - gradeData[terr].D / fruit[terr].total) * 100).toFixed(1)}%</text>`;
+        gradeChart.innerHTML += `<text x="108" y="160" font-size="18px" font-style="italic" font-weight="bold" fill="orange">${((1 - gradeData[terr].D / fruit[terr].total) * 100).toFixed(1)}%</text>`;
       }
 
     }
