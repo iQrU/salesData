@@ -249,7 +249,7 @@ function makeCover() {
         gradeTitle.setAttribute("x", 30), gradeTitle.setAttribute("y", 35);
         gradeTitle.innerHTML = "⛳ Territory 내 등급별 비중 🎳";
         gradeChart.appendChild(gradeTitle);
-        let gradeColor = {A: "red", B: "blue", C: "green", D: "grey"};
+        let gradeColor = {A: "red", B: "blue", C: "green", D: "gray"};
         startX = 130, startY = 75, endX, endY, portion = 0;
         for (let grade in dataDealer.target) {
           let path = document.createElementNS("http://www.w3.org/2000/svg", "path");
