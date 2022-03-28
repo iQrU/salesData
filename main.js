@@ -281,7 +281,7 @@ function makeCover() {
         center.setAttribute("cx", 130), center.setAttribute("cy", 150), center.setAttribute("r", 45), center.setAttribute("fill", "white");
         gradeChart.appendChild(center);
 
-        gradeChart.innerHTML += `<text x="90" y="140" font-size="9px" font-style="italic" font-weight="bold" fill="darkolivegreen">Target Share</text>`;
+        gradeChart.innerHTML += `<text x="95" y="140" font-size="9px" font-style="italic" font-weight="bold" fill="darkolivegreen">Target Share</text>`;
         gradeChart.innerHTML += `<text x="108" y="160" font-size="18px" font-style="italic" font-weight="bold" fill="orange">${((1 - gradeData[terr].D / fruit[terr].total) * 100).toFixed(1)}%</text>`;
       }
 
