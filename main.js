@@ -253,8 +253,8 @@ function makeCover() {
         startX = 130, startY = 75, endX, endY, portion = 0;
         for (let grade in dataDealer.target) {
           let path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-          let gradeSales = gradeData[terr][grade];
-          let gradeShare = (gradeSales? gradeSales : 0) / fruit[terr].total;
+          let gradeSales = gradeData[terr][grade] ? gradeData[terr][grade] : 0;
+          let gradeShare = gradeSales / fruit[terr].total;
           let largeArcFlag = gradeShare > 0.5 ? 1 : 0;
           let posiRad = portion + gradeShare * Math.PI;
           portion += 2 * Math.PI * gradeShare;
