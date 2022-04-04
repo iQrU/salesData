@@ -665,6 +665,8 @@ const addrDealer = {
                   district = distList[distList.indexOf(address.match(/[가-힣]{2,3}[시군구]{1}/)[0])] :
                   district = this.confirmDong(address);
 
+    if (!district) district = this.confirmDong(address);
+
     return district;
   },
   confirmDist: function(distList, regDist, address) {
