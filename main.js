@@ -150,39 +150,14 @@ function makeCover() {
         });
       }
     } else {
-      let area = dataDealer.terrOrg[terr];
-      let color = ["red", "orange", "yellowgreen", "green", "skyblue", "blue", "purple"];
-      /*let canvas = document.createElement("canvas");
-      canvas.height = 220, canvas.width = 320;
-      canvas.setAttribute("style", "{width: 300px; height: 220px;}");
-      let context = canvas.getContext("2d");
-      let startRad = -0.5 * Math.PI;
-      context.fillStyle = "darkolivegreen";
-      context.font = "1.6em Lucida Grande";
-      context.fillText("🍩 Territory 내 지역별 비중 🍉", 20, 30);*/
+      const area = dataDealer.terrOrg[terr];
+      const color = ["red", "orange", "yellowgreen", "green", "skyblue", "blue", "purple"];
+
       for (let i = 0; i < area.length; i++) {
         let areaSales = coverData[terr][area[i]];
-        //let portion = (areaSales? areaSales : 0) / report.local[terr];
-        //let posiRad = startRad + (0.5 + portion) * Math.PI;
         content.innerHTML += `<li class="item" id="${area[i]}">${area[i]}: ${areaSales? areaSales : 0}
           (${((areaSales? areaSales : 0)/localSum * 100).toFixed(1)}%)</li>`;
-        /*context.beginPath();
-        context.arc(125, 130, 65, startRad, startRad + portion * 2 * Math.PI, areaSales > 0 ? false : true);
-        context.lineTo(125, 130);
-        context.fillStyle = color[i];
-        context.fill();
-        context.fillRect(235, (canvas.height + 50) / 2 - 23 * area.length / 2 + 23 * i, 7, 7);
-        if(portion > 0.01) {
-          context.fillStyle = "black";
-          context.font = "1.2em Lucida Grande";
-          context.fillText((portion * 100).toFixed(0) + "%", 116 + 80 * Math.sin(posiRad), 136 - 80 * Math.cos(posiRad));
-        }
-        context.font = "1em Lucida Grande";
-        context.fillText(area[i].substr(3), 250, (canvas.height + 63) / 2 - 23 * area.length / 2 + 23 * i);
-        context.closePath();
-        startRad += portion * 2 * Math.PI;*/
       }
-      //content.appendChild(canvas);
 
       for (let i = 0; i < area.length; i++) {
         let areaSales = document.getElementById(area[i]);
@@ -200,89 +175,13 @@ function makeCover() {
         };
       }
 
-      let chartArea = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-      chartArea.setAttribute("width", "340"), chartArea.setAttribute("height", "250");
-
-      let title = document.createElementNS("http://www.w3.org/2000/svg", "text");
-      title.setAttribute("x", 30), title.setAttribute("y", 35);
-      title.innerHTML = "🌈 Territory 내 지역별 비중 🌏";
-      chartArea.appendChild(title);
-
-      let startX = 130, startY = 75, endX, endY, portion = 0;
-      for (let i = 0; i < area.length; i++) {
-        let path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        let areaSales = coverData[terr][area[i]];
-        let areaShare = (areaSales? areaSales : 0) / fruit[terr].total;
-        let largeArcFlag = areaShare > 0.5 ? 1 : 0;
-        let posiRad = portion + areaShare * Math.PI;
-        portion += 2 * Math.PI * areaShare;
-        endX = 130 + 75 * Math.sin(portion), endY = 150 - 75 * Math.cos(portion);
-        path.setAttribute("fill", color[i]), path.setAttribute("stroke", "white");
-        path.setAttribute("d", `M 130 150 L ${startX} ${startY} A 75 75 0 ${largeArcFlag} 1 ${endX} ${endY} Z`);
-        startX = endX, startY = endY;
-        chartArea.appendChild(path);
-
-        if (areaShare > 0.01) {
-          let percent = document.createElementNS("http://www.w3.org/2000/svg", "text");
-          percent.setAttribute("x", 120 + 90 * Math.sin(posiRad)), percent.setAttribute("y", 155 - 90 * Math.cos(posiRad));
-          percent.setAttribute("font-size", `12px`);
-          percent.innerHTML = `${(areaShare * 100).toFixed(0)}%`;
-          chartArea.appendChild(percent);  
-        }
-
-        chartArea.innerHTML +=
-          `<circle cx="255" cy=${162 - 23 * area.length / 2 + 23 * i} r="4" fill=${color[i]}></circle>
-          <text x="265" y=${166 - 23 * area.length / 2 + 23 * i} font-size="10px">${area[i].substr(3)}</text>`;
-      }
-      content.appendChild(chartArea);
-      let center = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-      center.setAttribute("cx", 130), center.setAttribute("cy", 150), center.setAttribute("r", 45), center.setAttribute("fill", "white");
-      chartArea.appendChild(center);
-
-      chartArea.innerHTML += `<text x="91" y="157" font-size="18px" font-style="italic" font-weight="bold" fill="darkolivegreen">VAC${terr}</text>`;
+      let title ="🌈 Territory 내 지역별 비중 🌏";
+      bakeDonut(coverData[terr], area, 340, 250, content, color, title);
 
       if (terr == "2306") {
-        let gradeChart = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-        gradeChart.setAttribute("width", "340"), gradeChart.setAttribute("height", "250");
-  
-        let gradeTitle = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        gradeTitle.setAttribute("x", 30), gradeTitle.setAttribute("y", 35);
-        gradeTitle.innerHTML = "⛳ Territory 내 등급별 비중 🎳";
-        gradeChart.appendChild(gradeTitle);
-        let gradeColor = {A: "red", B: "blue", C: "yellowgreen", D: "lightgrey"};
-        startX = 130, startY = 75, endX, endY, portion = 0;
-        for (let grade in dataDealer.target) {
-          let path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-          let gradeSales = gradeData[terr][grade] ? gradeData[terr][grade] : 0;
-          let gradeShare = gradeSales / fruit[terr].total;
-          let largeArcFlag = gradeShare > 0.5 ? 1 : 0;
-          let posiRad = portion + gradeShare * Math.PI;
-          portion += 2 * Math.PI * gradeShare;
-          endX = 130 + 75 * Math.sin(portion), endY = 150 - 75 * Math.cos(portion);
-          path.setAttribute("fill", gradeColor[grade]), path.setAttribute("stroke", "white");
-          path.setAttribute("d", `M 130 150 L ${startX} ${startY} A 75 75 0 ${largeArcFlag} 1 ${endX} ${endY} Z`);
-          startX = endX, startY = endY;
-          gradeChart.appendChild(path);
-  
-          if (gradeShare > 0.01) {
-            let percent = document.createElementNS("http://www.w3.org/2000/svg", "text");
-            percent.setAttribute("x", 120 + 90 * Math.sin(posiRad)), percent.setAttribute("y", 155 - 90 * Math.cos(posiRad));
-            percent.setAttribute("font-size", `12px`);
-            percent.innerHTML = `${(gradeShare * 100).toFixed(0)}%`;
-            gradeChart.appendChild(percent);  
-          }
-  
-          gradeChart.innerHTML +=
-            `<circle cx="255" cy=${116 + 23 * (grade.charCodeAt(0) - 65)} r="4" fill=${gradeColor[grade]}></circle>
-            <text x="265" y=${120 + 23 * (grade.charCodeAt(0) - 65)} font-size="10px" font-style="italic">${grade} (${gradeSales} / ${fruit[terr].total})</text>`;
-        }
-        content.appendChild(gradeChart);
-        let center = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-        center.setAttribute("cx", 130), center.setAttribute("cy", 150), center.setAttribute("r", 45), center.setAttribute("fill", "white");
-        gradeChart.appendChild(center);
-
-        gradeChart.innerHTML += `<text x="95" y="140" font-size="9px" font-style="italic" font-weight="bold" fill="darkolivegreen">Target Share</text>`;
-        gradeChart.innerHTML += `<text x="108" y="160" font-size="18px" font-style="italic" font-weight="bold" fill="orange">${((1 - gradeData[terr].D / fruit[terr].total) * 100).toFixed(1)}%</text>`;
+        let gradeTitle = "⛳ Territory 내 등급별 비중 🎳";
+        let gradeColor = { A: "red", B: "blue", C: "yellowgreen", D: "lightgrey" };
+        bakeDonut(gradeData[terr], dataDealer.target, 340, 250, content, gradeColor, gradeTitle);
       }
 
     }
@@ -400,147 +299,80 @@ function reportDaily() {
   }
 }
 
-function processRaw(data) {
-  let dataArray = [];
-  let rows = data.getElementsByTagName("Row");
-  for (let i = 0; i < rows.length; i++) {
-    let rowArray = [];
-    for (let j = 0; j < rows[i].childElementCount; j++) {
-      rowArray.push(rows[i].children[j].textContent);
-    }
-    dataArray.push(rowArray);
-  }
-  return dataArray;
-}
+function bakeDonut(dataDough, legendSet, trayWidth, trayHeight, parentDiv, palette, title) {
 
-function getArea(address) {
-  let distName = address.match(/[가-힣]{2,3}[구군]{1}/);
-  for (let idx in distObj) {
-    for (let value of distObj[idx]) {
-      if (value.indexOf(distName) != -1) {
-        return idx;
-      }
-    }
-  }
-  distName = address.match(/[가-힣]{2,3}시/);
-  for (let idx in distObj) {
-    if (distObj[idx].indexOf(distName[0]) != -1) {
-      return idx;
-    }
-  }
-  return null;
-}
+  const donutTray = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  donutTray.setAttribute("width", trayWidth), donutTray.setAttribute("height", trayHeight);
+  parentDiv.appendChild(donutTray);
+  
+  const banner = document.createElementNS("http://www.w3.org/2000/svg", "text");
+  banner.setAttribute("x", donutTray.width.baseVal.value / 9);
+  banner.setAttribute("y", donutTray.height.baseVal.value / 7);
+  banner.innerHTML = title;
+  donutTray.appendChild(banner);
 
-function getTerr(record) {
-  for (let num in terrOrg) {
-    if (record[5].indexOf("보건") != -1 && record[5].indexOf("의원") == -1) {
-      return "NIP";
-    } else if (record[record.length - 2].indexOf("도매") != -1) {
-      return "도매";
-    } else if (terrOrg[num].indexOf(record[record.length - 1]) != -1) {
-      return num;
-    }
-  }
-  return "";
-}
+  const center = { x: donutTray.width.baseVal.value * 19 / 50, y: donutTray.height.baseVal.value * 3 / 5};
+  const radius = donutTray.height.baseVal.value / 3.3;
+  let startX = center.x, startY = center.y - radius, endX, endY, portion = 0;
 
-function processData(dataArray, criteria, critAdded) {
-  let summeryObj = {};
-  let resultIdx = dataArray[0].indexOf("매출량");
-  let idx = dataArray[0].indexOf(criteria);
-  let idx2 = dataArray[0].indexOf(critAdded);
-  for (let i = 1; i < dataArray.length; i++) {
-    let salesVol = dataArray[i][resultIdx].replace(",", "") * 1;
-    if (summeryObj[dataArray[i][idx]]) {
-      if (critAdded) {
-        summeryObj[dataArray[i][idx]][dataArray[i][idx2]] ?
-          summeryObj[dataArray[i][idx]][dataArray[i][idx2]] += salesVol :
-          summeryObj[dataArray[i][idx]][dataArray[i][idx2]] = salesVol;
-      } else {
-        summeryObj[dataArray[i][idx]] += salesVol;
-      }
+  if (!Array.isArray(legendSet)) {
+    let legendArray = [];
+    for (let item in legendSet) {
+      legendArray.push(item);
+    }
+    legendSet = legendArray;
+  }
+  
+  let wholeSum = 0;
+  for (let i = 0; i < legendSet.length; i++) {
+    let item = legendSet[i];
+    wholeSum += dataDough[item] ? dataDough[item] : 0;
+  }
+
+  for (let i = 0; i < legendSet.length; i++) {
+    let item = legendSet[i], itemValue = dataDough[item] ? dataDough[item] : 0;
+    let share = itemValue / wholeSum;
+    let path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    let largeArcFlag = share > 0.5 ? 1 : 0;
+    let posiRad = portion + share * Math.PI;
+    portion += 2 * Math.PI * share;
+    endX = center.x + radius * Math.sin(portion), endY = center.y - radius * Math.cos(portion);
+
+    path.setAttribute("fill", Array.isArray(palette) ? palette[i] : palette[item]);
+    path.setAttribute("stroke", "white");
+    path.setAttribute("d", `M ${center.x} ${center.y} L ${startX} ${startY} A ${radius} ${radius} 0 ${largeArcFlag} 1 ${endX} ${endY} Z`);
+    startX = endX, startY = endY;
+    donutTray.appendChild(path);
+
+    if (share > 0.01) {
+      let percent = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      percent.setAttribute("x", center.x - 10 + 1.2 * radius * Math.sin(posiRad)), percent.setAttribute("y", center.y + 5 - 1.2 * radius * Math.cos(posiRad));
+      percent.setAttribute("font-size", `12px`);
+      percent.innerHTML = `${(share * 100).toFixed(0)}%`;
+      donutTray.appendChild(percent);  
+    }
+
+    donutTray.innerHTML +=
+      `<circle cx=${donutTray.width.baseVal.value * 3 / 4} cy=${donutTray.height.baseVal.value * 3 / 5 + 12 - 23 * (legendSet.length / 2 - i)} r="4" fill=${Array.isArray(palette) ? palette[i] : palette[item]}></circle>`;
+    if (legendSet[i].length == 1) {
+      donutTray.innerHTML += `<text x=${donutTray.width.baseVal.value * 3 / 4 + 10} y=${donutTray.height.baseVal.value * 3 / 5 + 16 - 23 * (legendSet.length / 2 - i)} font-size="10px" font-style="italic">${legendSet[i]} (${itemValue} / ${wholeSum})</text>`;
     } else {
-      if (critAdded) {
-        summeryObj[dataArray[i][idx]] = {};
-        summeryObj[dataArray[i][idx]][dataArray[i][idx2]] = salesVol;
-      } else {
-        summeryObj[dataArray[i][idx]] = salesVol;
-      }
+      donutTray.innerHTML += `<text x=${donutTray.width.baseVal.value * 3 / 4 + 10} y=${donutTray.height.baseVal.value * 3 / 5 + 16 - 23 * (legendSet.length / 2 - i)} font-size="10px" font-style="italic">${legendSet[i].indexOf("/") != -1 ? legendSet[i].substr(3) : legendSet[i]}</text>`;
     }
   }
-  return summeryObj;
-}
 
-function processAddress(address) {
-  let area, district;
-  let wideArea = ["서울", "부산", "인천", "대구", "광주", "대전", "울산", "경기", "강원", "충북", "충남", "전북", "전남", "경북", "경남", "제주", "세종"];
-  let metro = ["서울", "부산", "인천", "대구", "광주", "대전", "울산"];
-  let cities = ["고양시", "성남시", "수원시", "안산시", "안양시", "용인시", "청주시", "천안시", "전주시", "포항시", "창원시"];
-  let addrString = address.replace(/\s/g, "");
-  let iniTwo = addrString.substring(0,2), areaDouble;
-  iniTwo == "경상" || iniTwo == "전라" || iniTwo == "충청" ?
-    areaDouble = addrString.charAt(0) + addrString.charAt(2) :
-    areaDouble = iniTwo;
-  wideArea.indexOf(areaDouble) != -1 ?
-    area = areaDouble :
-    area = getArea(address);
+  let hole = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+  hole.setAttribute("cx", center.x), hole.setAttribute("cy", center.y);
+  hole.setAttribute("r", radius * 3 / 5), hole.setAttribute("fill", "white");
+  donutTray.appendChild(hole);
 
-  let startIdx, charNums;
-  if (metro.indexOf(area) != -1) {
-    addrString.indexOf("특별시") == 2 || addrString.indexOf("광역시") == 2 ?
-      startIdx = 5 :
-      addrString.charAt(2) == "시" ?
-        startIdx = 3 :
-        startIdx = 2;
-    addrString.substr(startIdx + 1, 3).indexOf("구") != -1 ?
-      charNums = addrString.substr(startIdx + 1, 3).indexOf("구") + 2 :
-      charNums = addrString.substr(startIdx + 1, 3).indexOf("군") + 2;
-  } else if (area != "세종") {
-    addrString.charAt(1) == "남" || addrString.charAt(1) == "북" ?
-      startIdx = 2 :
-      addrString.indexOf("도") < 7 && addrString.indexOf("도") != -1 ?
-        startIdx = addrString.indexOf("도") + 1 :
-        startIdx = 2;
-    cities.indexOf(addrString.substr(startIdx, 3)) != -1 ?
-      charNums = addrString.substr(startIdx, 8).indexOf("구") + 1 :
-      addrString.substr(startIdx + 1, 2).indexOf("군") == 1 ?
-        charNums = 3 :
-        charNums = addrString.substr(startIdx + 1, 3).indexOf("시") + 2;
+  if (legendSet[3] == "D") {
+    donutTray.innerHTML += `<text x=${center.x - 40} y=${center.y - radius / 2 * Math.sin(Math.PI / 12)} font-size="9px" font-style="italic" font-weight="bold" fill="darkolivegreen">Target Share</text>`;
+    donutTray.innerHTML += `<text x=${center.x - 25} y=${center.y + radius / 2 * Math.sin(Math.PI / 12)} font-size="18px" font-style="italic" font-weight="bold" fill="orange">${((1 - dataDough.D / wholeSum) * 100).toFixed(1)}%</text>`;
   } else {
-    charNums = -1;
+    donutTray.innerHTML += `<text x=${center.x - 40} y=${center.y + 7} font-size="18px" font-style="italic" font-weight="bold" fill="darkolivegreen">VAC2306</text>`;
   }
 
-  let regDist = addrString.substr(startIdx, charNums);
-  let distList = distObj[area];
-  charNums == 3 || charNums == 4 ?
-    district = distList[distList.indexOf(regDist)] :
-    charNums > 4 ?
-      district = distList[distList.indexOf(regDist.replace("시", "시 "))] :
-      charNums == -1 ?
-        district = "세종시" :
-        distList.indexOf(regDist) != -1 ?
-          district = distList[distList.indexOf(regDist)] :
-          area == "인천" && regDist == "남구" ?
-            district = "미추홀구" :
-            district = distList[distList.indexOf(address.match(/[가-힣]{2,3}[시군구]{1}/)[0])];
-        
-  return area + "/" + district;
-}
-
-function getTotal(dataArray) {
-  let total;
-  let refIdx = dataArray[0].indexOf("구분");
-  let terrIdx = dataArray[0].indexOf("Territory");
-  let resultIdx = dataArray[0].indexOf("매출량");
-  for (let i = 1; i < dataArray.length; i++) {
-    let salesVol = dataArray[i][resultIdx].replace(",", "") * 1;
-    if (dataArray[i][refIdx].indexOf("도매") == -1 && dataArray[i][terrIdx] != "NIP") {
-      total == null ?
-        total = salesVol :
-        total += salesVol;
-    }
-  }
-  console.log(total);
 }
 
 const addrDealer = {
@@ -648,7 +480,7 @@ const addrDealer = {
   
     let regDist = addrString.substr(startIdx, charNums);
     let distList = this[area];
-    //console.log(this.confirmDong(address), charNums, distList.indexOf(regDist), address);
+    //console.log(this.getArea(address), charNums, regDist, address);
     charNums == 3 || (charNums == 4 && regDist.charAt(2) != "군" && distList[distList.indexOf(regDist)]) ?
       district = distList[distList.indexOf(regDist)] :
       charNums > 4 ?
@@ -697,7 +529,7 @@ const addrDealer = {
   },
   confirmDong: function(address) {
     let area = this.getArea(address);
-    let dongName = address.match(/[가-힣]{2}[동리]/);
+    let dongName = address.match(/[가-힣]{2}[동리읍]/);
     if (this[area].indexOf(this.dong[dongName]) != -1) {
       return this.dong[dongName];
     };
@@ -710,7 +542,7 @@ const dataDealer = {
   terrOrg: {
     1303: ["인천/남동구", "인천/미추홀구", "인천/연수구", "인천/동구", "서울/구로구", "경기/시흥시", "경기/안산시 상록구"],
     2302: ["서울/광진구", "서울/동대문구", "서울/성동구", "서울/중랑구", "경기/구리시", "경기/포천시", "경기/가평군"],
-    2306: ["경기/성남시 분당구", "경기/성남시 수정구", "경기/성남시 중원구", "경기/용인시 수지구"],
+    2306: ["경기/성남시 분당구", "경기/성남시 중원구", "경기/성남시 수정구", "경기/용인시 수지구"],
     others: [],
     GH: ["(학)가톨릭대학교서울성모병원", "(학)카톨릭대학교여의도성모병원", "인천성모병원 (학)가톨릭대학교", "(학)가톨릭학원의정부성모병원", "(학)가톨릭대학교부천성모병원", "성빈센트병원(학)가톨릭학원가톨릭대학교", "카톨릭대학교은평성모병원"],
     NIP: [],
@@ -922,6 +754,41 @@ const dataDealer = {
 }
 
 /*
+let area = dataDealer.terrOrg[terr];
+let color = ["red", "orange", "yellowgreen", "green", "skyblue", "blue", "purple"];
+let canvas = document.createElement("canvas");
+canvas.height = 220, canvas.width = 320;
+canvas.setAttribute("style", "{width: 300px; height: 220px;}");
+let context = canvas.getContext("2d");
+let startRad = -0.5 * Math.PI;
+context.fillStyle = "darkolivegreen";
+context.font = "1.6em Lucida Grande";
+context.fillText("🍩 Territory 내 지역별 비중 🍉", 20, 30);
+for (let i = 0; i < area.length; i++) {
+  let areaSales = coverData[terr][area[i]];
+  //let portion = (areaSales? areaSales : 0) / report.local[terr];
+  //let posiRad = startRad + (0.5 + portion) * Math.PI;
+  content.innerHTML += `<li class="item" id="${area[i]}">${area[i]}: ${areaSales? areaSales : 0}
+    (${((areaSales? areaSales : 0)/localSum * 100).toFixed(1)}%)</li>`;
+  context.beginPath();
+  context.arc(125, 130, 65, startRad, startRad + portion * 2 * Math.PI, areaSales > 0 ? false : true);
+  context.lineTo(125, 130);
+  context.fillStyle = color[i];
+  context.fill();
+  context.fillRect(235, (canvas.height + 50) / 2 - 23 * area.length / 2 + 23 * i, 7, 7);
+  if(portion > 0.01) {
+    context.fillStyle = "black";
+    context.font = "1.2em Lucida Grande";
+    context.fillText((portion * 100).toFixed(0) + "%", 116 + 80 * Math.sin(posiRad), 136 - 80 * Math.cos(posiRad));
+  }
+  context.font = "1em Lucida Grande";
+  context.fillText(area[i].substr(3), 250, (canvas.height + 63) / 2 - 23 * area.length / 2 + 23 * i);
+  context.closePath();
+  startRad += portion * 2 * Math.PI;
+}
+content.appendChild(canvas);
+
+
 let xhr = new XMLHttpRequest();
 let accountHistory = {};
 xhr.overrideMimeType("text/xml");
