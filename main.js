@@ -274,6 +274,8 @@ function reportDaily() {
     total += sum;
   }
 
+  if (total == 0) div.innerHTML = "<br>ㅤㅤ😂ㅤ 💤 💤 💤 ㅤ🙌<br><br>";
+
   let showIt = document.createAttribute("style");
   showIt.value = "display: block";
   foot.setAttributeNode(showIt);
@@ -287,8 +289,8 @@ function reportDaily() {
       localSum += fruit[terr].total;
     }  
     if (territory == "GH") {
-      foot.innerHTML = `${territory} 비중: ${total.toLocaleString()}/${(localSum + fruit["GH"].total).toLocaleString()}
-        (${(total/(localSum + fruit["GH"].total) * 100).toFixed(1)}%)` + "<br>";
+      foot.innerHTML = `${territory} 비중: ${total.toLocaleString()}/${(localSum + (fruit["GH"] ? fruit["GH"].total : 0)).toLocaleString()}
+        (${(total/(localSum + (fruit["GH"] ? fruit["GH"].total : 0)) * 100).toFixed(1)}%)` + "<br>";
     } else {
       foot.innerHTML = `Territory ${territory} 비중: ${total.toLocaleString()}/${localSum.toLocaleString()}
         (${(total/localSum * 100).toFixed(1)}%)` + "<br>";
