@@ -274,7 +274,7 @@ function reportDaily() {
     total += sum;
   }
 
-  if (total == 0) div.innerHTML = "<br>ㅤㅤ😂ㅤ 💤 💤 💤 ㅤ🙌<br><br>";
+  if (total == 0) div.innerHTML = "<br><p>ㅤㅤ😂ㅤ 💤 💤 💤 ㅤ🙌</p><br><br>";
 
   let showIt = document.createAttribute("style");
   showIt.value = "display: block";
