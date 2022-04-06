@@ -274,7 +274,7 @@ function reportDaily() {
     total += sum;
   }
 
-  if (total == 0) div.innerHTML = "<br><p>ㅤㅤ😂ㅤ 💤 💤 💤 ㅤ🙌</p><br><br>";
+  if (total == 0) div.innerHTML = "<br><p>ㅤ😂ㅤ 💤 💤 💤 ㅤ🙌</p><br><br>";
 
   let showIt = document.createAttribute("style");
   showIt.value = "display: block";
@@ -369,10 +369,14 @@ function bakeDonut(dataDough, legendSet, trayWidth, trayHeight, parentDiv, palet
   donutTray.appendChild(hole);
 
   if (legendSet[3] == "D") {
-    donutTray.innerHTML += `<text x=${center.x - 40} y=${center.y - radius / 2 * Math.sin(Math.PI / 12)} font-size="9px" font-style="italic" font-weight="bold" fill="darkolivegreen">Target Share</text>`;
+    donutTray.innerHTML += `<text x=${center.x - 36} y=${center.y - radius / 2 * Math.sin(Math.PI / 12)} font-size="9px" font-style="italic" font-weight="bold" fill="darkolivegreen">Target Share</text>`;
     donutTray.innerHTML += `<text x=${center.x - 25} y=${center.y + radius / 2 * Math.sin(Math.PI / 12)} font-size="18px" font-style="italic" font-weight="bold" fill="orange">${((1 - dataDough.D / wholeSum) * 100).toFixed(1)}%</text>`;
   } else {
-    donutTray.innerHTML += `<text x=${center.x - 40} y=${center.y + 7} font-size="18px" font-style="italic" font-weight="bold" fill="darkolivegreen">VAC2306</text>`;
+    let territory;
+    for (let terr in dataDealer.terrOrg) {
+      if (dataDealer.terrOrg[terr] == legendSet) territory = terr;
+    }
+    donutTray.innerHTML += `<text x=${center.x - 40} y=${center.y + 7} font-size="18px" font-style="italic" font-weight="bold" fill="darkolivegreen">VAC${territory}</text>`;
   }
 
 }
