@@ -9,7 +9,7 @@ let fruit;
 // 매출자료 가져오기!!
 
 const xlr = new XMLHttpRequest();
-let monthData = "/data/CKD Prevenar Sales data(2022.04).xls";
+let monthData = "/data/CKD Prevenar Sales data(2022.05).xls";
 xlr.open("GET", monthData);
 xlr.overrideMimeType("text/xml");
 xlr.onreadystatechange = function() {
