@@ -1,6 +1,5 @@
 body {
   margin: 0;
-  font-family: sans-serif;
 }
 select {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
@@ -33,6 +32,10 @@ p {
   margin: 0px;
   padding: 4px 20px;
 }
+svg {
+  margin: 0 10px;
+}
+
 #header {
   background-color: #34346850;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
@@ -82,11 +85,17 @@ p {
   color: brown;
 }
 
+.board {
+  position: absolute;
+  top: 50px;
+  background: white;
+  opacity: 0.85;
+}
+
 .bubble {
   position: absolute;
   top: 40px;
   left: 5px;
-  width: 95px;
   background: #FFFFFF;
   -webkit-border-radius: 10px;
   -moz-border-radius: 10px;
@@ -116,6 +125,27 @@ p {
   z-index: 0;
   top: -13px;
   left: 11px;
+}
+
+.wrap {
+  padding: 3px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.ball {
+  display: flex;
+  justify-content: center;
+  width: 25px;
+  height: 25px;
+  margin: 10px 0 15px 15px;
+  padding: 5px;
+  border-radius: 50%;
+  font-size: 13px;
+  color: white;
+  background-color: slateblue;
+}
+.ball:hover {
+  background-color: #343468;
 }
 
 .unit {

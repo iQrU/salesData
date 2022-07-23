@@ -49,37 +49,46 @@ xlr.onreadystatechange = function() {
 };
 xlr.send();
 
-let calendar = document.querySelector('.fa-calendar-alt');
-let menuBox = document.createElement("div");
+const calendar = document.querySelector('.fa-calendar-alt');
+const menuBox = document.createElement("div");
 menuBox.setAttribute("class", "bubble");
 document.body.appendChild(menuBox);
-let thisMonth = new Date().getMonth();
-let thisYear = new Date().getFullYear();
-let monthArray = ["Jan.", "Feb.", "Mar.", "Apr.", "May", "Jun.", "Jul.", "Aug.", "Sep.", "Oct.", "Nov.", "Dec."];
-for (let i = 0; i < (thisYear - 2020) * 12 + thisMonth + 2; i++) {
-  let menu = document.createElement("p");
-  let count = Math.floor((thisMonth - i) / 12);
-  let year = thisYear + count;
-  let month = (thisMonth + (thisYear - 2019) * 12 - i) % 12;
-  menu.style.padding = "3px 10px";
-  menu.innerHTML = monthArray[month] + " " + year;
-  menuBox.appendChild(menu);
-  menu.onmouseover = function() {
-    menu.style.color = "blue", menu.style.fontStyle = "italic";
-  }
-  menu.onmouseout = function() {
-    menu.style.color = "black", menu.style.fontStyle = "normal";
-  }
-  menu.onclick = function() {
-    div.innerHTML = "", foot.style.display = "none";
-    let ring = document.createElement("div");
-    ring.setAttribute("class", "ring");
-    div.appendChild(ring);
-    monthData = "/data/CKD Prevenar Sales data(" + year + "." + (month > 8 ? (month + 1) : "0" + (month + 1)) + ").xls"
-    xlr.open("GET", monthData);
-    xlr.overrideMimeType("text/xml");
-    xlr.send();
-    menuBox.style.display = "none";
+const menuWrap = document.createElement("div");
+menuWrap.setAttribute("class", "wrap");
+menuBox.appendChild(menuWrap);
+
+const thisMonth = new Date().getMonth();
+const thisYear = new Date().getFullYear();
+const monthArray = ["Jan.", "Feb.", "Mar.", "Apr.", "May", "Jun.", "Jul.", "Aug.", "Sep.", "Oct.", "Nov.", "Dec."];
+for (let i = 0; i < thisYear - 2019; i++) {
+  const yearTag = document.createElement("p");
+  const year = thisYear - i;
+  yearTag.setAttribute("class", "belt");
+  yearTag.innerHTML = year + "년";
+  menuWrap.appendChild(yearTag);
+  const monthTag = document.createElement("div");
+  monthTag.style.display = "flex";
+  menuWrap.appendChild(monthTag);
+  const count = i == 0 ? thisMonth + 1 : 12;
+  for (let j = 0; j < count; j++) {
+    const month = monthArray[j];
+    const monthBall = document.createElement("div");
+    monthBall.setAttribute("class", "ball");
+    monthBall.innerHTML = `<text id=${year + month}>${month}</text>`;
+    monthTag.appendChild(monthBall);
+
+    const menu = document.getElementById(year + month);
+    menu.onclick = function() {
+      div.innerHTML = "", foot.style.display = "none";
+      let ring = document.createElement("div");
+      ring.setAttribute("class", "ring");
+      div.appendChild(ring);
+      monthData = "/data/CKD Prevenar Sales data(" + year + "." + (j > 8 ? (j + 1) : "0" + (j + 1)) + ").xls"
+      xlr.open("GET", monthData);
+      xlr.overrideMimeType("text/xml");
+      xlr.send();
+      menuBox.style.display = "none";
+    }
   }
 }
 menuBox.style.display = "none";
@@ -151,7 +160,7 @@ function makeCover() {
       }
     } else {
       const area = dataDealer.terrOrg[terr];
-      const color = ["red", "orange", "yellowgreen", "green", "skyblue", "blue", "purple"];
+      const color = ["red", "orange", "yellowgreen", "green", "skyblue", "blue", "purple", "violet", "pink", "gray", "brown"];
 
       for (let i = 0; i < area.length; i++) {
         let areaSales = coverData[terr][area[i]];
@@ -308,12 +317,12 @@ function bakeDonut(dataDough, legendSet, trayWidth, trayHeight, parentDiv, palet
   parentDiv.appendChild(donutTray);
   
   const banner = document.createElementNS("http://www.w3.org/2000/svg", "text");
-  banner.setAttribute("x", donutTray.width.baseVal.value / 9);
+  banner.setAttribute("x", donutTray.width.baseVal.value / 20);
   banner.setAttribute("y", donutTray.height.baseVal.value / 7);
   banner.innerHTML = title;
   donutTray.appendChild(banner);
 
-  const center = { x: donutTray.width.baseVal.value * 19 / 50, y: donutTray.height.baseVal.value * 3 / 5};
+  const center = { x: donutTray.width.baseVal.value * 17 / 50, y: donutTray.height.baseVal.value * 3 / 5 };
   const radius = donutTray.height.baseVal.value / 3.3;
   let startX = center.x, startY = center.y - radius, endX, endY, portion = 0;
 
@@ -331,6 +340,8 @@ function bakeDonut(dataDough, legendSet, trayWidth, trayHeight, parentDiv, palet
     wholeSum += dataDough[item] ? dataDough[item] : 0;
   }
 
+  const unitNum = legendSet.length > 7 ? (legendSet.length > 14 ? Math.ceil(legendSet.length / 2) : 7) : legendSet.length;
+  let positionX, positionY;
   for (let i = 0; i < legendSet.length; i++) {
     let item = legendSet[i], itemValue = dataDough[item] ? dataDough[item] : 0;
     let share = itemValue / wholeSum;
@@ -340,7 +351,7 @@ function bakeDonut(dataDough, legendSet, trayWidth, trayHeight, parentDiv, palet
     portion += 2 * Math.PI * share;
     endX = center.x + radius * Math.sin(portion), endY = center.y - radius * Math.cos(portion);
 
-    path.setAttribute("fill", Array.isArray(palette) ? palette[i] : palette[item]);
+    path.setAttribute("fill", Array.isArray(palette) ? palette[i % palette.length] : palette[item]);
     path.setAttribute("stroke", "white");
     path.setAttribute("d", `M ${center.x} ${center.y} L ${startX} ${startY} A ${radius} ${radius} 0 ${largeArcFlag} 1 ${endX} ${endY} Z`);
     startX = endX, startY = endY;
@@ -354,12 +365,15 @@ function bakeDonut(dataDough, legendSet, trayWidth, trayHeight, parentDiv, palet
       donutTray.appendChild(percent);  
     }
 
+    positionX = donutTray.width.baseVal.value * 3 / (legendSet.length > 7 ? 4.6 : 4.2) + 78 * Math.floor(i / unitNum);
+    positionY = donutTray.height.baseVal.value * 3 / 5 + 12 - 23 * (unitNum / 2 - i % unitNum);
+
     donutTray.innerHTML +=
-      `<circle cx=${donutTray.width.baseVal.value * 3 / 4} cy=${donutTray.height.baseVal.value * 3 / 5 + 12 - 23 * (legendSet.length / 2 - i)} r="4" fill=${Array.isArray(palette) ? palette[i] : palette[item]}></circle>`;
+      `<circle cx=${positionX} cy=${positionY} r="4" fill=${Array.isArray(palette) ? palette[i % palette.length] : palette[item]}></circle>`;
     if (legendSet[i].length == 1) {
-      donutTray.innerHTML += `<text x=${donutTray.width.baseVal.value * 3 / 4 + 10} y=${donutTray.height.baseVal.value * 3 / 5 + 16 - 23 * (legendSet.length / 2 - i)} font-size="10px" font-style="italic">${legendSet[i]} (${itemValue} / ${wholeSum})</text>`;
+      donutTray.innerHTML += `<text x=${positionX + 10} y=${positionY + 4} font-size="10px" font-style="italic">${legendSet[i]} (${itemValue} / ${wholeSum})</text>`;
     } else {
-      donutTray.innerHTML += `<text x=${donutTray.width.baseVal.value * 3 / 4 + 10} y=${donutTray.height.baseVal.value * 3 / 5 + 16 - 23 * (legendSet.length / 2 - i)} font-size="10px" font-style="italic">${legendSet[i].indexOf("/") != -1 ? legendSet[i].substr(3) : legendSet[i]}</text>`;
+      donutTray.innerHTML += `<text x=${positionX + 10} y=${positionY + 4} font-size="10px" font-style="italic">${legendSet[i].indexOf("/") != -1 ? legendSet[i].substr(3) : legendSet[i]}</text>`;
     }
   }
 
@@ -535,7 +549,7 @@ const addrDealer = {
   },
   confirmDong: function(address) {
     let area = this.getArea(address);
-    let dongName = address.match(/[가-힣]{2}[동리읍]/);
+    let dongName = address.match(/[가"-힣]{2}[동리읍]/);
     if (this[area].indexOf(this.dong[dongName]) != -1) {
       return this.dong[dongName];
     };
@@ -546,9 +560,22 @@ const addrDealer = {
 const dataDealer = {
 
   terrOrg: {
-    1303: ["인천/남동구", "인천/미추홀구", "인천/연수구", "인천/동구", "서울/구로구", "경기/시흥시", "경기/안산시 상록구"],
+    //1301: ["경기/김포시", "경기/파주시", "경기/고양시 일산서구", "경기/고양시 일산동구"],
+    //1302: ["경기/부천시", "경기/고양시 덕양구", "인천/부평구", "인천/계양구", "인천/서구", "인천/중구", "인천/강화군"],
+    //1303: ["인천/남동구", "인천/미추홀구", "인천/연수구", "인천/동구", "서울/구로구", "경기/시흥시", "경기/안산시 상록구"],
+    //1304: ["서울/마포구", "서울/영등포구", "서울/은평구", "서울/동작구", "서울/양천구"],
+    //1305: ["서울/강북구", "서울/서대문구", "서울/성북구", "서울/용산구", "서울/종로구", "서울/중구", "서울/도봉구"],
+    //1306: ["서울/관악구", "서울/금천구", "서울/강서구", "경기/광명시", "경기/안양시 동안구", "경기/안양시 만안구"],
+    //1307: ["경기/안산시 단원구", "경기/안성시", "경기/평택시", "경기/화성시", "경기/오산시"],
+    2301: ["서울/노원구", "경기/의정부시", "경기/남양주시", "경기/양주시", "경기/동두천시", "경기/연천군"],
     2302: ["서울/광진구", "서울/동대문구", "서울/성동구", "서울/중랑구", "경기/구리시", "경기/포천시", "경기/가평군"],
+    2303: ["서울/강동구", "서울/송파구", "경기/하남시", "경기/광주시"],
+    2304: ["서울/강남구", "서울/서초구", "경기/과천시", "경기/군포시", "경기/의왕시"],
+    2305: ["경기/수원시 권선구", "경기/수원시 영통구", "경기/수원시 장안구", "경기/수원시 팔달구", "경기/용인시 기흥구", "경기/용인시 처인구", "경기/이천시", "경기/여주시", "경기/양평군"],
     2306: ["경기/성남시 분당구", "경기/성남시 수정구", "경기/성남시 중원구", "경기/용인시 수지구"],
+    2307: ["강원/강릉시", "강원/고성군", "강원/동해시", "강원/삼척시", "강원/속초시", "강원/양구군", "강원/양양군", "강원/영월군", "강원/원주시", "강원/인제군", "강원/정선군", "강원/철원군", "강원/춘천시", "강원/태백시", "강원/평창군", "강원/홍천군", "강원/화천군", "강원/횡성군"],
+    //3303: ["세종/세종시", "대전/대덕구", "충북/청주시 상당구", "충북/청주시 서원구", "충북/청주시 청원구", "충북/청주시 흥덕구", "충북/충주시", "충북/제천시", "충북/괴산군", "충북/단양군", "충북/음성군", "충북/증평군", "충북/진천군"],
+    //4307: ["부산/북구", "부산/동구", "경남/양산시", "경남/김해시"],
     others: [],
     GH: ["(학)가톨릭대학교서울성모병원", "(학)카톨릭대학교여의도성모병원", "인천성모병원 (학)가톨릭대학교", "(학)가톨릭학원의정부성모병원", "(학)가톨릭대학교부천성모병원", "성빈센트병원(학)가톨릭학원가톨릭대학교", "카톨릭대학교은평성모병원"],
     NIP: [],
@@ -556,7 +583,7 @@ const dataDealer = {
   },
 
   clan: {
-    local: ["1303", "2302", "2306", "others"],
+    local: ["2301", "2302", "2303", "2304", "2305", "2306", "2307", "others"],
     GH: ["GH"],
     NIP: ["NIP"],
     도매: ["도매"]
