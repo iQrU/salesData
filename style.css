@@ -141,11 +141,14 @@ svg {
   margin: 10px 0 15px 15px;
   padding: 5px;
   border-radius: 50%;
+  border: slateblue solid 5px;
+  font-style: italic;
+  font-weight: bold;
   font-size: 13px;
-  color: white;
-  background-color: slateblue;
+  color: #343468;
 }
 .ball:hover {
+  color: white;
   background-color: #343468;
 }
 
