@@ -9,7 +9,7 @@ let fruit;
 // 매출자료 가져오기!!
 
 const xlr = new XMLHttpRequest();
-let monthData = "/data/CKD Prevenar Sales data(2022.07).xls";
+let monthData = "/data/CKD Prevenar Sales data(2022.05).xls";
 xlr.open("GET", monthData);
 xlr.overrideMimeType("text/xml");
 xlr.onreadystatechange = function() {
@@ -60,7 +60,7 @@ menuBox.appendChild(menuWrap);
 const thisMonth = new Date().getMonth();
 const thisYear = new Date().getFullYear();
 const monthArray = ["Jan.", "Feb.", "Mar.", "Apr.", "May", "Jun.", "Jul.", "Aug.", "Sep.", "Oct.", "Nov.", "Dec."];
-for (let i = 0; i < thisYear - 2019; i++) {
+for (let i = 0; i < thisYear - 2018; i++) {
   const yearTag = document.createElement("p");
   const year = thisYear - i;
   yearTag.setAttribute("class", "belt");
@@ -68,14 +68,16 @@ for (let i = 0; i < thisYear - 2019; i++) {
   menuWrap.appendChild(yearTag);
   const monthTag = document.createElement("div");
   monthTag.style.display = "flex";
+  monthTag.style.flexWrap = "wrap";
   menuWrap.appendChild(monthTag);
-  const count = i == 0 ? thisMonth + 1 : 12;
-  for (let j = 0; j < count; j++) {
+  const lastMonth = i == 0 ? thisMonth : 11;
+  const firstMonth = i == thisYear - 2019 ? 11 : 0;
+  for (let j = lastMonth; j >= firstMonth; j--) {
     const month = monthArray[j];
     const monthBall = document.createElement("div");
     monthBall.setAttribute("class", "ball");
     monthBall.innerHTML = `<text id=${year + month}>${month}</text>`;
-    monthTag.appendChild(monthBall);
+    monthTag.insertBefore(monthBall, monthTag.firstChild);
 
     const menu = document.getElementById(year + month);
     menu.onclick = function() {
