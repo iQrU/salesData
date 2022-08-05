@@ -81,6 +81,7 @@ svg {
   right: 15px;
   color: burlywood;
   filter: drop-shadow(3px 3px 3px);
+  z-index: 10;
 }
 .fa-redo:hover {
   color: brown;
