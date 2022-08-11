@@ -71,7 +71,7 @@ for (let i = 0; i < thisYear - 2018; i++) {
   monthTag.style.flexWrap = "wrap";
   menuWrap.appendChild(monthTag);
   const lastMonth = i == 0 ? thisMonth : 11;
-  const firstMonth = i == thisYear - 2019 ? 11 : 0;
+  const firstMonth = i == thisYear - 2019 ? 8 : 0;
   for (let j = lastMonth; j >= firstMonth; j--) {
     const month = monthArray[j];
     const monthBall = document.createElement("div");
