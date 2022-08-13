@@ -2,6 +2,12 @@ body {
   margin: 0;
   font-family: sans-serif;
 }
+
+form {
+  display: flex;
+  align-items: center;
+}
+
 select {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   font-size: medium;
@@ -96,7 +102,7 @@ svg {
 
 .bubble {
   position: absolute;
-  top: 40px;
+  top: 43px;
   left: 5px;
   background: #FFFFFF;
   -webkit-border-radius: 10px;
@@ -114,7 +120,7 @@ svg {
   width: 0;
   z-index: 1;
   top: -10px;
-  left: 12px;
+  left: 20px;
 }
 .bubble:before {
   content: '';
@@ -126,7 +132,7 @@ svg {
   width: 0;
   z-index: 0;
   top: -13px;
-  left: 11px;
+  left: 19px;
 }
 
 .wrap {
