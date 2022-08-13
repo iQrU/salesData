@@ -1,5 +1,6 @@
 body {
   margin: 0;
+  padding-top: 56px;
   font-family: sans-serif;
 }
 
@@ -44,7 +45,10 @@ svg {
 }
 
 #header {
-  background-color: #34346850;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background-color: rgb(192, 191, 207);
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   color: #343468;
   border-bottom: 1px solid darkgray;
