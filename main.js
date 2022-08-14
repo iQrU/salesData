@@ -13,7 +13,7 @@ const thisMonth = new Date().getMonth();
 const thisYear = new Date().getFullYear();
 const theDate = new Date().getDate();
 let year = thisYear, month = thisMonth + 1;
-if (theDate < 20) {
+if (theDate < 7) {
   month = (thisMonth + 11) % 12 + 1;
   month == 12 ? year-- : null;
 }
@@ -169,9 +169,11 @@ function makeCover() {
         let areaSales = document.getElementById(area);
         areaSales.addEventListener("click", function () {
           selector[0].value = terr;
-          let opt = document.createElement("option");
-          opt.innerHTML = area;
-          selector[1].appendChild(opt);
+          for (let area in coverData.others) {
+            let opt = document.createElement("option");
+            opt.innerHTML = area;
+            selector[1].appendChild(opt);  
+          }
           selector[1].value = area;
           reportDaily();
         });
@@ -195,7 +197,6 @@ function makeCover() {
             opt.setAttribute("value", area[j]);
             opt.innerHTML = area[j];
             selector[1].appendChild(opt);
-            selector[1].onchange = reportDaily;
           }
           selector[1].value = area[i];
           reportDaily();
@@ -225,6 +226,7 @@ function makeCover() {
       content.classList.toggle('active');
     }
   }
+  selector[1].onchange = reportDaily;
 
   if (document.querySelectorAll('.bubble')) {
     let menuBox = document.querySelectorAll('.bubble');
