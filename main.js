@@ -13,7 +13,7 @@ const thisMonth = new Date().getMonth();
 const thisYear = new Date().getFullYear();
 const theDate = new Date().getDate();
 let year = thisYear, month = thisMonth + 1;
-if (theDate < 7) {
+if (theDate < 20) {
   month = (thisMonth + 11) % 12 + 1;
   month == 12 ? year-- : null;
 }
