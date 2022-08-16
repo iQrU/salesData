@@ -145,6 +145,94 @@ function makeCover() {
     }
   }
 
+  let radiusList = [];
+  for (let district in dataDealer.localBranch) {
+    let sum = 0;
+    for (let i = 0; i < dataDealer.localBranch[district].length; i++) {
+      const terr = dataDealer.localBranch[district][i];
+      sum += fruit[terr] ? fruit[terr].total : 0;
+    }
+    const branchBox = document.createElement("div");
+    const share = sum / localSum;
+    const radius = Math.sqrt(share);
+    const index = district.substring(3) - 1;
+    const distanceX = index % 2 == 1 ? 350 * radiusList[index - 1] : 0;
+    const distanceY = index == 1 ? 48 + 350 * radiusList[index - 1] / 4 : 48 + 350 * radiusList[0] / 4 + 360 * radiusList[index - 2];
+    radiusList.push(radius);
+    branchBox.setAttribute("class", "branchBubble");
+    branchBox.setAttribute(`style`, `--i:${distanceX}px; --j:${distanceY}px; --k:${Math.random() * 3 + 7}s`);
+    branchBox.style.width = 350 * radius + "px";
+    branchBox.style.height = 350 * radius + "px";
+    branchBox.innerHTML = `${district}:<br>${sum.toLocaleString(0)} (${(share * 100).toFixed(1)}%)`;
+    coverPage.appendChild(branchBox);
+
+    branchBox.onclick = function() {
+      coverPage.innerHTML = "";
+      for (let i = 0; i < dataDealer.localBranch[district].length; i++) {
+        let terr = dataDealer.localBranch[district][i];
+        let terrBox = document.createElement("div");
+        terrBox.setAttribute("class", "line");
+        coverPage.appendChild(terrBox);
+    
+        let title = document.createElement("div");
+        terrBox.appendChild(title);
+        title.innerHTML = `<span class="narrow" id=${terr}>${svgPath.plus}</span>
+          ${terr}: ${fruit[terr] ? fruit[terr].total.toLocaleString() : 0}
+          (${(fruit[terr] ? fruit[terr].total / localSum * 100 : 0).toFixed(1)}%)<br>`;
+    
+        let content = document.createElement("div");
+        content.setAttribute("class", "has");
+        terrBox.appendChild(content);
+
+        const area = dataDealer.terrOrg[terr];
+        const color = ["red", "orange", "yellowgreen", "green", "skyblue", "blue", "purple", "violet", "pink", "gray", "brown"];
+  
+        for (let i = 0; i < area.length; i++) {
+          let areaSales = coverData[terr][area[i]];
+          content.innerHTML += `<li class="item" id="${area[i]}">${area[i]}: ${areaSales ? areaSales : 0}
+            (${((areaSales ? areaSales : 0) / localSum * 100).toFixed(1)}%)</li>`;
+        }
+  
+        for (let i = 0; i < area.length; i++) {
+          let areaSales = document.getElementById(area[i]);
+          areaSales.onclick = function () {
+            selector[0].value = terr;
+            for (let j = 0; j < area.length; j++) {
+              let opt = document.createElement("option");
+              opt.setAttribute("value", area[j]);
+              opt.innerHTML = area[j];
+              selector[1].appendChild(opt);
+            }
+            selector[1].value = area[i];
+            reportDaily();
+          };
+        }
+  
+        const areaTitle  = "🌈 Territory 내 지역별 비중 🌏";
+        bakeDonut(coverData[terr], area, 340, 250, content, color, areaTitle);
+  
+        if (terr == "2306") {
+          let gradeTitle = "⛳ Territory 내 등급별 비중 🎳";
+          let gradeColor = { A: "red", B: "blue", C: "yellowgreen", D: "lightgrey" };
+          bakeDonut(gradeData[terr], dataDealer.target, 340, 250, content, gradeColor, gradeTitle);
+        }
+  
+        let anchor = document.getElementById(terr);
+        anchor.onclick = function () {
+          if (content.classList.value == "has active") {
+            anchor.innerHTML = `${svgPath.plus}`;
+            title.style.color = "black", title.style.fontStyle = "normal", title.style.fontWeight = "normal";
+          } else {
+            anchor.innerHTML = `${svgPath.minus}`;
+            title.style.color = "darkolivegreen", title.style.fontStyle = "italic", title.style.fontWeight = "bold";
+          }
+          content.classList.toggle('active');
+        }    
+      }
+    }
+  }
+
+/*
   for (let i = 0; i < dataDealer.clan.local.length; i++) {
     let terr = dataDealer.clan.local[i];
     let terrBox = document.createElement("div");
@@ -226,6 +314,8 @@ function makeCover() {
       content.classList.toggle('active');
     }
   }
+*/
+
   selector[1].onchange = reportDaily;
 
   if (document.querySelectorAll('.bubble')) {
@@ -581,13 +671,13 @@ const addrDealer = {
 const dataDealer = {
 
   terrOrg: {
-    /*1301: ["경기/김포시", "경기/파주시", "경기/고양시 일산서구", "경기/고양시 일산동구"],
+    1301: ["경기/김포시", "경기/파주시", "경기/고양시 일산서구", "경기/고양시 일산동구"],
     1302: ["경기/부천시", "경기/고양시 덕양구", "인천/부평구", "인천/계양구", "인천/서구", "인천/중구", "인천/강화군"],
     1303: ["인천/남동구", "인천/미추홀구", "인천/연수구", "인천/동구", "서울/구로구", "경기/시흥시", "경기/안산시 상록구"],
     1304: ["서울/마포구", "서울/영등포구", "서울/은평구", "서울/동작구", "서울/양천구"],
     1305: ["서울/강북구", "서울/서대문구", "서울/성북구", "서울/용산구", "서울/종로구", "서울/중구", "서울/도봉구"],
     1306: ["서울/관악구", "서울/금천구", "서울/강서구", "경기/광명시", "경기/안양시 동안구", "경기/안양시 만안구"],
-    1307: ["경기/안산시 단원구", "경기/안성시", "경기/평택시", "경기/화성시", "경기/오산시"],*/
+    1307: ["경기/안산시 단원구", "경기/안성시", "경기/평택시", "경기/화성시", "경기/오산시"],
     2301: ["서울/노원구", "경기/의정부시", "경기/남양주시", "경기/양주시", "경기/동두천시", "경기/연천군"],
     2302: ["서울/광진구", "서울/동대문구", "서울/성동구", "서울/중랑구", "경기/구리시", "경기/포천시", "경기/가평군"],
     2303: ["서울/강동구", "서울/송파구", "경기/하남시", "경기/광주시"],
@@ -595,7 +685,7 @@ const dataDealer = {
     2305: ["경기/수원시 권선구", "경기/수원시 영통구", "경기/수원시 장안구", "경기/수원시 팔달구", "경기/용인시 기흥구", "경기/용인시 처인구", "경기/이천시", "경기/여주시", "경기/양평군"],
     2306: ["경기/성남시 분당구", "경기/성남시 수정구", "경기/성남시 중원구", "경기/용인시 수지구"],
     2307: ["강원/강릉시", "강원/고성군", "강원/동해시", "강원/삼척시", "강원/속초시", "강원/양구군", "강원/양양군", "강원/영월군", "강원/원주시", "강원/인제군", "강원/정선군", "강원/철원군", "강원/춘천시", "강원/태백시", "강원/평창군", "강원/홍천군", "강원/화천군", "강원/횡성군"],
-    /*3301: ["충남/당진시", "충남/서산시", "충남/아산시", "충남/천안시 동남구", "충남/천안시 서북구", "충남/태안군", "대전/동구"],
+    3301: ["충남/당진시", "충남/서산시", "충남/아산시", "충남/천안시 동남구", "충남/천안시 서북구", "충남/태안군", "대전/동구"],
     3302: ["대전/서구", "대전/중구", "충남/계룡시", "충남/공주시", "충남/금산군", "충남/논산시", "충남/보령시", "충남/부여군", "충남/서천군", "충남/예산군", "충남/청양군", "충남/홍성군", "충북/보은군", "충북/영동군", "충북/옥천군"],
     3303: ["세종/세종시", "대전/대덕구", "충북/청주시 상당구", "충북/청주시 서원구", "충북/청주시 청원구", "충북/청주시 흥덕구", "충북/충주시", "충북/제천시", "충북/괴산군", "충북/단양군", "충북/음성군", "충북/증평군", "충북/진천군"],
     3304: ["전북/전주시 덕진구", "전북/전주시 완산구", "전북/남원시", "전북/무주군", "전북/순창군", "전북/완주군", "전북/임실군", "전북/장수군", "전북/진안군", "대전/유성구"],
@@ -612,7 +702,7 @@ const dataDealer = {
     4308: ["울산/남구", "울산/동구", "울산/중구", "울산/북구", "울산/울주군", "부산/기장군", "경남/밀양시", "경남/창녕군"],
     4309: ["부산/해운대구", "부산/사상구", "부산/수영구", "부산/금정구", "부산/남구", "부산/동래구"],
     4310: ["부산/연제구", "부산/서구", "부산/중구", "부산/강서구", "부산/부산진구", "경남/거창군", "경남/함안군", "경남/의령군", "경남/합천군"],
-    6501: ["제주/제주시", "제주/서귀포시"],*/
+    6501: ["제주/제주시", "제주/서귀포시"],
     others: [],
     GH: ["(학)가톨릭대학교서울성모병원", "(학)카톨릭대학교여의도성모병원", "인천성모병원 (학)가톨릭대학교", "(학)가톨릭학원의정부성모병원", "(학)가톨릭대학교부천성모병원", "성빈센트병원(학)가톨릭학원가톨릭대학교", "카톨릭대학교은평성모병원"],
     NIP: [],
@@ -620,10 +710,17 @@ const dataDealer = {
   },
 
   clan: {
-    local: [/*"1301", "1302", "1303", "1304", "1305", "1306", "1307",*/ "2301", "2302", "2303", "2304", "2305", "2306", "2307", /*"3301", "3302", "3303", "3304", "3305", "3306", "3307", "4301", "4302", "4303", "4304", "4305", "4306", "4307", "4308", "4309", "4310", "6501",*/ "others"],
+    local: ["1301", "1302", "1303", "1304", "1305", "1306", "1307", "2301", "2302", "2303", "2304", "2305", "2306", "2307", "3301", "3302", "3303", "3304", "3305", "3306", "3307", "4301", "4302", "4303", "4304", "4305", "4306", "4307", "4308", "4309", "4310", "6501", "others"],
     GH: ["GH"],
     NIP: ["NIP"],
     도매: ["도매"]
+  },
+
+  localBranch: {
+    VAC1: ["1301", "1302", "1303", "1304", "1305", "1306", "1307"],
+    VAC2: ["2301", "2302", "2303", "2304", "2305", "2306", "2307"],
+    VAC3: ["3301", "3302", "3303", "3304", "3305", "3306", "3307"],
+    VAC4: ["4301", "4302", "4303", "4304", "4305", "4306", "4307", "4308", "4309", "4310"]
   },
 
   target: {
