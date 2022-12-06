@@ -17,7 +17,7 @@ if (theDate < 5) {
   month = (thisMonth + 11) % 12 + 1;
   month == 12 ? year-- : null;
 }
-let monthData = `/data/CKD Prevenar Sales data(${year}.${month < 10 ? "0" + month : month}).xls`;
+let monthData = `/data/CKD Prevenar Sales data(2022.10).xls`;
 xlr.open("GET", monthData);
 xlr.overrideMimeType("text/xml");
 xlr.onreadystatechange = function () {
@@ -68,7 +68,7 @@ menuBox.appendChild(menuWrap);
 const monthArray = ["Jan.", "Feb.", "Mar.", "Apr.", "May", "Jun.", "Jul.", "Aug.", "Sep.", "Oct.", "Nov.", "Dec."];
 for (let i = 0; i < thisYear - 2018; i++) {
   const yearTag = document.createElement("p");
-  const year = thisYear - i;
+  const year = 2022 - i;
   yearTag.setAttribute("class", "belt");
   yearTag.innerHTML = year + "년";
   menuWrap.appendChild(yearTag);
@@ -76,7 +76,7 @@ for (let i = 0; i < thisYear - 2018; i++) {
   monthTag.style.display = "flex";
   monthTag.style.flexWrap = "wrap";
   menuWrap.appendChild(monthTag);
-  const lastMonth = i == 0 ? thisMonth : 11;
+  const lastMonth = i == 0 ? 9 : 11;
   const firstMonth = i == thisYear - 2019 ? thisMonth : 0;
   for (let j = lastMonth; j >= firstMonth; j--) {
     const month = monthArray[j];
